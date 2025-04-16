@@ -1,0 +1,35 @@
+server:
+  servlet:
+    context-path: /joinmeds-service
+  port: 8082
+
+spring:
+  datasource:
+#    url: jdbc:postgresql://65.0.51.72:5432/pmposhan_dev
+#    username: app_user
+#    password: FNmYFJJRq4oayNrQFJQs
+    url: jdbc:postgresql://localhost:5432/join_meds
+    username: postgres
+    password: 123ikm
+  liquibase:
+    drop-first: false
+  jpa:
+    open-in-view: false
+    show-sql: true
+
+  minio:
+    url : http://localhost:9000/
+    access-key: N6lxUbKWCtcPb6kqHfat
+    secret-key: q3mSbwQHpj3l36CW8yn8bPpktaCQKAK45hxgU0EL
+
+  application:
+    storage:
+      file-attachment-bucket: cpl-file-attachment-local
+
+  logging:
+    level:
+      org:
+        springframework:
+          security=DEBUG:
+email:
+  api: https://api2.lsgkerala.gov.in/email/public/api/mail/v0/sendMail
