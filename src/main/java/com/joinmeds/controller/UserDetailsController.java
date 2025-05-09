@@ -20,7 +20,7 @@ public class UserDetailsController {
         return ResponseEntity.ok(service.save(dto));
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/update/{userId}")
     public ResponseEntity<UserDetailsDTO> update(@PathVariable UUID id, @RequestBody UserDetailsDTO dto) {
         return ResponseEntity.ok(service.update(id, dto));
     }

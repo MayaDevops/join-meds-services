@@ -13,6 +13,7 @@ import java.util.UUID;
 public class JoinMedsOrgDetails {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "about_company")

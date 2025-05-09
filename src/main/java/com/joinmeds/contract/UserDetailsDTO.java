@@ -31,4 +31,5 @@ public class UserDetailsDTO {
     private String languageTestCleared;
     private String passportNumber;
     private String certification;
+    private UUID userId;
 }

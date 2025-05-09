@@ -13,6 +13,7 @@ import java.util.UUID;
 public class UserDetails {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     private String fullname;
@@ -21,8 +22,8 @@ public class UserDetails {
     private String address;
     private String aadhaarNo;
 
-    private UUID photoId;
-    private UUID resumeId;
+    private String photoId;
+    private String resumeId;
 
     private String profession;
     private String academicStatus;
@@ -40,4 +41,7 @@ public class UserDetails {
     private String passportNumber;
     private String certification;
     private LocalDateTime createdAt;
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private UserLogin userLogin;
 }

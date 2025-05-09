@@ -1,8 +1,6 @@
 package com.joinmeds.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,8 +16,8 @@ import java.util.UUID;
 public class UserLogin {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
     private String username;
     private String password;
     private String emailMobile;
@@ -29,7 +27,8 @@ public class UserLogin {
     private String officialEmail;
     private String officePhone;
     private Instant createdAt;
+    @OneToOne(mappedBy = "userLogin")
+    private UserDetails userDetails;
 
-    // Getters and Setters
 }
 
