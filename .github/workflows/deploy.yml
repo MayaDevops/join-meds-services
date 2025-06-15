@@ -28,7 +28,7 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          source: "target/join-meds-services-0.0.1-SNAPSHOT.jar"
+          source: "target/joinmeds-0.0.1-SNAPSHOT.jar"
           target: "/home/ubuntu/app"
 
       - name: Restart application on VPS
@@ -39,4 +39,4 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             pkill -f 'java -jar' || true
-            nohup java -jar /home/ubuntu/app/join-meds-services-0.0.1-SNAPSHOT.jar > /home/ubuntu/app/log.txt 2>&1 &
+            nohup java -jar /home/ubuntu/app/joinmeds-0.0.1-SNAPSHOT.jar > /home/ubuntu/app/log.txt 2>&1 &
