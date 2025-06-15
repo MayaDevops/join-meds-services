@@ -29,15 +29,23 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           source: "target/joinmeds-0.0.1-SNAPSHOT.jar"
-          target: "/root/join-meds-services/target" # this should match WorkingDirectory in systemd
+          target: "/root/join-meds-services/target"
 
-      - name: Restart application on VPS via systemd
+      - name: Stop running app and restart systemd service
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
+            echo "Killing any existing Java process using port 8082..."
+            PID=$(sudo lsof -t -i:8082 || true)
+            if [ ! -z "$PID" ]; then
+              sudo kill -9 $PID
+              echo "Killed process $PID on port 8082."
+            fi
+
+            echo "Reloading and restarting systemd service..."
             sudo systemctl daemon-reload
             sudo systemctl restart joinmeds
             sudo systemctl status joinmeds --no-pager
