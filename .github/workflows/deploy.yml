@@ -29,14 +29,15 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           source: "target/joinmeds-0.0.1-SNAPSHOT.jar"
-          target: "/home/ubuntu/app"
+          target: "/root/join-meds-services" # this should match WorkingDirectory in systemd
 
-      - name: Restart application on VPS via systemctl
+      - name: Restart application on VPS via systemd
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
+            sudo systemctl daemon-reload
             sudo systemctl restart joinmeds
             sudo systemctl status joinmeds --no-pager
