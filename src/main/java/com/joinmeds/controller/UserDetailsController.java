@@ -1,6 +1,7 @@
 package com.joinmeds.controller;
 import com.joinmeds.contract.UserDetailsDTO;
 import com.joinmeds.service.UserDetailsService;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +22,12 @@ public class UserDetailsController {
     }
 
     @PutMapping("/update/{userId}")
-    public ResponseEntity<UserDetailsDTO> update(@PathVariable UUID id, @RequestBody UserDetailsDTO dto) {
-        return ResponseEntity.ok(service.update(id, dto));
+    public ResponseEntity<UserDetailsDTO> update(@RequestParam UUID userId, @RequestBody UserDetailsDTO dto) {
+        return ResponseEntity.ok(service.update(userId, dto));
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDetailsDTO> fetchById(@PathVariable UUID id) {
-        return ResponseEntity.ok(service.fetchById(id));
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDetailsDTO> fetchById(@RequestParam UUID userId) {
+        return ResponseEntity.ok(service.fetchById(userId));
     }
 
     @GetMapping("/all")

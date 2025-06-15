@@ -41,7 +41,5 @@ public class UserDetails {
     private String passportNumber;
     private String certification;
     private LocalDateTime createdAt;
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private UserLogin userLogin;
+    private UUID userId;
 }

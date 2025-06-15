@@ -5,9 +5,6 @@ server:
 
 spring:
   datasource:
-#    url: jdbc:postgresql://65.0.51.72:5432/pmposhan_dev
-#    username: app_user
-#    password: FNmYFJJRq4oayNrQFJQs
     url: jdbc:postgresql://1.69.62.73.165:5432/join_meds
     username: yourusername
     password: 123ikm

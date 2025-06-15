@@ -17,8 +17,6 @@ public class SignupResponse {
     public String officialPhone;
     public String incorporationNo;
     public String emailMobile;
-    public String password;
-    public String confirmPassword;
     public Instant createdAt;
     public String userType;
 

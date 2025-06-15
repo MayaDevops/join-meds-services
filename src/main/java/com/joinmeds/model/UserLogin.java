@@ -27,8 +27,5 @@ public class UserLogin {
     private String officialEmail;
     private String officePhone;
     private Instant createdAt;
-    @OneToOne(mappedBy = "userLogin")
-    private UserDetails userDetails;
-
-}
+  }
 

@@ -22,21 +22,20 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetailsDTO save(UserDetailsDTO dto) {
         UserDetails entity = new UserDetails();
         BeanUtils.copyProperties(dto, entity);
-        entity.setId(UUID.randomUUID());
         entity.setCreatedAt(LocalDateTime.now());
         return mapToDTO(repo.save(entity));
     }
 
     @Override
     public UserDetailsDTO update(UUID userId, UserDetailsDTO dto) {
-        UserDetails entity = repo.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        UserDetails entity = repo.findByUserId(userId).orElseThrow(() -> new RuntimeException("User not found"));
         BeanUtils.copyProperties(dto, entity, "userId", "createdAt");
         return mapToDTO(repo.save(entity));
     }
 
-    public UserDetailsDTO fetchById(UUID id) {
-        UserDetails entity = repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + id));
+    public UserDetailsDTO fetchById(UUID userId) {
+        UserDetails entity = repo.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
         return mapToDTO(entity);
     }
 

@@ -34,7 +34,7 @@ public class ImageService {
         Path filePath = Paths.get(uploadDir, uniqueFilename);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        UserDetails user = userDetailsRepository.findByUserLoginId(userId)
+        UserDetails user = userDetailsRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         user.setPhotoId(uniqueFilename);
