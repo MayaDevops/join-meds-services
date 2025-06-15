@@ -31,12 +31,12 @@ jobs:
           source: "target/joinmeds-0.0.1-SNAPSHOT.jar"
           target: "/home/ubuntu/app"
 
-      - name: Restart application on VPS
+      - name: Restart application on VPS via systemctl
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            pkill -f 'java -jar' || true
-            nohup java -jar /home/ubuntu/app/joinmeds-0.0.1-SNAPSHOT.jar > /home/ubuntu/app/log.txt 2>&1 &
+            sudo systemctl restart joinmeds
+            sudo systemctl status joinmeds --no-pager
