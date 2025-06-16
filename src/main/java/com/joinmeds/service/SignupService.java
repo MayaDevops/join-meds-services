@@ -2,6 +2,7 @@ package com.joinmeds.service;
 
 import com.joinmeds.contract.SignupRequest;
 import com.joinmeds.contract.SignupResponse;
+import com.joinmeds.contract.UserDetailsDTO;
 import com.joinmeds.model.UserDetails;
 import com.joinmeds.model.UserLogin;
 import com.joinmeds.respository.UserDetailsRepository;
@@ -46,8 +47,10 @@ public class SignupService {
         userLogin.setUserType(request.userType);
         userLogin.setCreatedAt(Instant.now());
         userLogin.setUsername(request.emailMobile);
-
         userLoginRepository.save(userLogin);
+        UserDetails userDetails=new UserDetails();
+        userDetails.setUserId(userLogin.getId());
+        userDetailsRepository.save(userDetails);
 
 
 
