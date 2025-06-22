@@ -91,6 +91,8 @@ public class SignupService {
         response.setIncorporationNo(userLogin.getIncorporationNo());
         response.setCreatedAt(userLogin.getCreatedAt());
         response.setUserType(userLogin.getUserType());
+        response.setPassword(userLogin.getPassword());
+        response.setUsername(userLogin.getUsername());
 
         return response;
     }
