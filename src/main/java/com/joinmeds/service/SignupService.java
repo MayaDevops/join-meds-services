@@ -28,15 +28,7 @@ public class SignupService {
     @Autowired
     private UserDetailsRepository userDetailsRepository;
 
-    public String registerUser(SignupRequest request) {
-        if (!request.password.equals(request.confirmPassword)) {
-            throw new IllegalArgumentException("Passwords do not match.");
-        }
-
-        if (userLoginRepository.findByEmailMobile(request.emailMobile).isPresent()) {
-            throw new IllegalArgumentException("User already exists with this email/mobile.");
-        }
-
+    public UUID registerUser(SignupRequest request) {
         UserLogin userLogin = new UserLogin();
         userLogin.setPassword(request.password);
         userLogin.setEmailMobile(request.emailMobile);
@@ -51,11 +43,35 @@ public class SignupService {
         UserDetails userDetails=new UserDetails();
         userDetails.setUserId(userLogin.getId());
         userDetailsRepository.save(userDetails);
-
-
-
-        return "User registered successfully.";
+        UserLogin savedUser = userLoginRepository.save(userLogin);
+        return savedUser.getId(); // return ID
     }
+
+//    public String registerUser(SignupRequest request) {
+//        if (!request.password.equals(request.confirmPassword)) {
+//            throw new IllegalArgumentException("Passwords do not match.");
+//        }
+//
+//        if (userLoginRepository.findByEmailMobile(request.emailMobile).isPresent()) {
+//            throw new IllegalArgumentException("User already exists with this email/mobile.");
+//        }
+//
+//        UserLogin userLogin = new UserLogin();
+//        userLogin.setPassword(request.password);
+//        userLogin.setEmailMobile(request.emailMobile);
+//        userLogin.setOfficePhone(request.officialPhone);
+//        userLogin.setOrgName(request.orgName);
+//        userLogin.setOfficialEmail(request.officialEmail);
+//        userLogin.setIncorporationNo(request.incorporationNo);
+//        userLogin.setUserType(request.userType);
+//        userLogin.setCreatedAt(Instant.now());
+//        userLogin.setUsername(request.emailMobile);
+//        userLoginRepository.save(userLogin);
+//        UserDetails userDetails=new UserDetails();
+//        userDetails.setUserId(userLogin.getId());
+//        userDetailsRepository.save(userDetails);
+//        return "User registered successfully.";
+//    }
 
     public String updateUserById(UUID id, SignupRequest request) {
         UserLogin userLogin = userLoginRepository.findById(id)

@@ -2,6 +2,7 @@ package com.joinmeds.controller;
 
 import com.joinmeds.common.SecureSwaggerController;
 import com.joinmeds.contract.LoginRequest;
+import com.joinmeds.contract.Response;
 import com.joinmeds.contract.SignupRequest;
 import com.joinmeds.contract.SignupResponse;
 import com.joinmeds.model.UserDetails;
@@ -9,6 +10,7 @@ import com.joinmeds.model.UserLogin;
 import com.joinmeds.respository.UserDetailsRepository;
 import com.joinmeds.respository.UserLoginRepository;
 import com.joinmeds.service.SignupService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +25,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/user")
-
 public class SignupController implements SecureSwaggerController {
     @Autowired
     private UserLoginRepository userRepo;
@@ -37,8 +38,9 @@ public class SignupController implements SecureSwaggerController {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignupRequest request) {
         try {
-            String message = signupService.registerUser(request);
-            return ResponseEntity.ok(message);
+            UUID userId = signupService.registerUser(request);
+            Response response = new Response("User registered successfully", userId, 200);
+            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
