@@ -3,8 +3,10 @@ package com.joinmeds.service;
 import com.joinmeds.contract.SignupRequest;
 import com.joinmeds.contract.SignupResponse;
 import com.joinmeds.contract.UserDetailsDTO;
+import com.joinmeds.model.JoinMedsOrgDetails;
 import com.joinmeds.model.UserDetails;
 import com.joinmeds.model.UserLogin;
+import com.joinmeds.respository.JoinMedsOrgDetailsRepository;
 import com.joinmeds.respository.UserDetailsRepository;
 import com.joinmeds.respository.UserLoginRepository;
 import lombok.AllArgsConstructor;
@@ -28,7 +30,19 @@ public class SignupService {
     @Autowired
     private UserDetailsRepository userDetailsRepository;
 
+    @Autowired
+    private JoinMedsOrgDetailsRepository joinMedsOrgDetailsRepository;
+
     public UUID registerUser(SignupRequest request) {
+
+        if (!request.password.equals(request.confirmPassword)) {
+            throw new IllegalArgumentException("Passwords do not match.");
+        }
+
+        if (userLoginRepository.findByEmailMobile(request.emailMobile).isPresent()) {
+            throw new IllegalArgumentException("User already exists with this email/mobile.");
+        }
+
         UserLogin userLogin = new UserLogin();
         userLogin.setPassword(request.password);
         userLogin.setEmailMobile(request.emailMobile);
@@ -40,9 +54,16 @@ public class SignupService {
         userLogin.setCreatedAt(Instant.now());
         userLogin.setUsername(request.emailMobile);
         userLoginRepository.save(userLogin);
-        UserDetails userDetails=new UserDetails();
-        userDetails.setUserId(userLogin.getId());
-        userDetailsRepository.save(userDetails);
+
+        if(request.userType.equals("ORGANIZATION")) {
+            JoinMedsOrgDetails joinMedsOrgDetails=new JoinMedsOrgDetails();
+            joinMedsOrgDetails.setUserId(userLogin.getId());
+            joinMedsOrgDetailsRepository.save(joinMedsOrgDetails);
+        } else {
+            UserDetails userDetails = new UserDetails();
+            userDetails.setUserId(userLogin.getId());
+            userDetailsRepository.save(userDetails);
+        }
         UserLogin savedUser = userLoginRepository.save(userLogin);
         return savedUser.getId(); // return ID
     }
