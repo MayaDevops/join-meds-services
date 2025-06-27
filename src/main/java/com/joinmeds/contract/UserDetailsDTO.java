@@ -3,18 +3,20 @@ import lombok.*;
 
 import java.util.UUID;
 
+@Builder
+@Getter
+@Setter
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class UserDetailsDTO {
     private String fullname;
     private String dob;
     private String email;
     private String address;
     private String aadhaarNo;
-    private UUID photoId;
-    private UUID resumeId;
+    private String photoId;
+    private String resumeId;
     private String profession;
     private String academicStatus;
     private String pgStatus;
