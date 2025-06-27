@@ -67,9 +67,8 @@ public class SignupController implements SecureSwaggerController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest request) {
-        Optional<UserLogin> user = userRepo.findByUsernameAndPassword(
-                request.getUsername(),
-                request.getPassword()
+        Optional<UserLogin> user = userRepo.findByUsername(
+                request.getUsername()
         );
 
         if (user.isPresent()) {

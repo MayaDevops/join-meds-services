@@ -1,7 +1,6 @@
 package com.joinmeds.controller;
 import com.joinmeds.contract.UserDetailsDTO;
 import com.joinmeds.service.UserDetailsService;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

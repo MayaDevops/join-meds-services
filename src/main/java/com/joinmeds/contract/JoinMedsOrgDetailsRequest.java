@@ -1,6 +1,12 @@
 package com.joinmeds.contract;
-import lombok.Data;
+import lombok.*;
+
+@Builder
+@Getter
+@Setter
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class JoinMedsOrgDetailsRequest {
     private String aboutCompany;
     private String jobHiringFor;
