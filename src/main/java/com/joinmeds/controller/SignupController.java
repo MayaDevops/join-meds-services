@@ -5,23 +5,22 @@ import com.joinmeds.contract.LoginRequest;
 import com.joinmeds.contract.Response;
 import com.joinmeds.contract.SignupRequest;
 import com.joinmeds.contract.SignupResponse;
-import com.joinmeds.model.UserDetails;
 import com.joinmeds.model.UserLogin;
 import com.joinmeds.respository.UserDetailsRepository;
 import com.joinmeds.respository.UserLoginRepository;
 import com.joinmeds.service.SignupService;
-import lombok.Data;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
+
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/user")
