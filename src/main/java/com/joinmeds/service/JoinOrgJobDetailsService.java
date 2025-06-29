@@ -1,23 +1,18 @@
 package com.joinmeds.service;
 
 
-import com.joinmeds.contract.JoinOrgJobDetailsDTO;
-import com.joinmeds.contract.SignupRequest;
-import com.joinmeds.contract.SignupResponse;
+import com.joinmeds.contract.JoinOrgJobDetailsReqDTO;
+import com.joinmeds.contract.JoinOrgJobDetailsResDTO;
 import com.joinmeds.model.JoinMedsOrgDetails;
 import com.joinmeds.model.JoinOrgJobDetails;
-import com.joinmeds.model.UserDetails;
-import com.joinmeds.model.UserLogin;
 import com.joinmeds.respository.JoinMedsOrgDetailsRepository;
 import com.joinmeds.respository.JoinOrgJobDetailsRepository;
 import com.joinmeds.respository.UserDetailsRepository;
-import com.joinmeds.respository.UserLoginRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -37,7 +32,7 @@ public class JoinOrgJobDetailsService {
     @Autowired
     private JoinMedsOrgDetailsRepository joinMedsOrgDetailsRepository;
 
-   public UUID save (UUID id,JoinOrgJobDetailsDTO request){
+   public UUID save (UUID id, JoinOrgJobDetailsReqDTO request){
 
        JoinMedsOrgDetails JoinMedsOrgDetails = joinMedsOrgDetailsRepository.findByUserId(id)
                .orElseThrow(() -> new NoSuchElementException("No Organization found with ID: " + id));
@@ -62,7 +57,7 @@ public class JoinOrgJobDetailsService {
 
    }
 
-    public String update (UUID id, JoinOrgJobDetailsDTO request){
+    public String update (UUID id, JoinOrgJobDetailsReqDTO request){
 
 
         JoinOrgJobDetails joinOrgJobDetails = joinOrgJobDetailsRepository.findById(id)
@@ -83,7 +78,7 @@ public class JoinOrgJobDetailsService {
 
     }
 
-    public List<JoinOrgJobDetailsDTO> fetchByUserId(UUID id) {
+    public List<JoinOrgJobDetailsResDTO> fetchByUserId(UUID id) {
         List<JoinOrgJobDetails> entities = joinOrgJobDetailsRepository.findByUserId(id);
 
         if (entities.isEmpty()) {
@@ -96,8 +91,8 @@ public class JoinOrgJobDetailsService {
 
     }
 
-    private JoinOrgJobDetailsDTO mapToDTO(JoinOrgJobDetails entity) {
-        return JoinOrgJobDetailsDTO.builder()
+    private JoinOrgJobDetailsResDTO mapToDTO(JoinOrgJobDetails entity) {
+        return JoinOrgJobDetailsResDTO.builder()
                 .id(entity.getId())
                 .userId(entity.getUserId())
                 .orgId(entity.getOrgId())

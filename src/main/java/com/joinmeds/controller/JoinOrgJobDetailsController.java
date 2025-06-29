@@ -1,7 +1,8 @@
 package com.joinmeds.controller;
 
 
-import com.joinmeds.contract.JoinOrgJobDetailsDTO;
+import com.joinmeds.contract.JoinOrgJobDetailsReqDTO;
+import com.joinmeds.contract.JoinOrgJobDetailsResDTO;
 import com.joinmeds.contract.Response;
 import com.joinmeds.service.JoinOrgJobDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +23,10 @@ public class JoinOrgJobDetailsController {
     @Autowired
     private final JoinOrgJobDetailsService service;
 
-    @PostMapping("/save")
-    public ResponseEntity<?> save(@PathVariable UUID id ,@RequestBody JoinOrgJobDetailsDTO dto) {
+    @PostMapping("/save/{userId}")
+    public ResponseEntity<?> save(@PathVariable UUID userId ,@RequestBody JoinOrgJobDetailsReqDTO dto) {
         try {
-            UUID jobId = service.save(id,dto);
+            UUID jobId = service.save(userId,dto);
             Response response = new Response("Job application saved successfully", jobId, 200);
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
@@ -35,7 +36,7 @@ public class JoinOrgJobDetailsController {
     }
 
     @PutMapping("/update/{jobId}")
-    public ResponseEntity<?> updateUserById(@PathVariable UUID jobId, @RequestBody JoinOrgJobDetailsDTO request) {
+    public ResponseEntity<?> updateUserById(@PathVariable UUID jobId, @RequestBody JoinOrgJobDetailsReqDTO request) {
         try {
             String message = service.update(jobId, request);
             return ResponseEntity.ok(message);
@@ -45,7 +46,7 @@ public class JoinOrgJobDetailsController {
     }
 
     @GetMapping("/list/{userId}")
-    public ResponseEntity<List<JoinOrgJobDetailsDTO>> fetchByOrgUserId(@PathVariable UUID userId) {
+    public ResponseEntity<List<JoinOrgJobDetailsResDTO>> fetchByOrgUserId(@PathVariable UUID userId) {
         return ResponseEntity.ok(service.fetchByUserId(userId));
     }
 }
