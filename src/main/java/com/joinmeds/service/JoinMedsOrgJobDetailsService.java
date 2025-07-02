@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -49,6 +50,7 @@ public class JoinMedsOrgJobDetailsService {
        joinOrgJobDetails.setPayTo(request.getPayTo());
        joinOrgJobDetails.setPayRange(request.getPayRange());
        joinOrgJobDetails.setJobDesc(request.getJobDesc());
+       joinOrgJobDetails.setCreatedAt(LocalDateTime.now());
        joinOrgJobDetails.setIsActive(true);
 
        joinOrgJobDetailsRepository.save(joinOrgJobDetails);
@@ -120,6 +122,7 @@ public class JoinMedsOrgJobDetailsService {
                 .payTo(entity.getPayTo())
                 .payRange(entity.getPayRange())
                 .jobDesc(entity.getJobDesc())
+                .createdAt(entity.getCreatedAt())
                 .build();
     }
 
