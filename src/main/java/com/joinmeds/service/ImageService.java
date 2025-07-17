@@ -29,7 +29,7 @@ public class ImageService {
 
 
         String extension = getFileExtension(file.getOriginalFilename());
-        String uniqueFilename = UUID.randomUUID().toString() + "." + extension;
+        String uniqueFilename = userId.toString() + "." + extension;
 
         Path filePath = Paths.get(uploadDir, uniqueFilename);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);

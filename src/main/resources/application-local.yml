@@ -1,13 +1,14 @@
 server:
   servlet:
-    context-path: /joinmeds-service
+#    context-path: /joinmeds-service
   port: 8082
 
 spring:
   datasource:
-    url: jdbc:postgresql://1.69.62.73.165:5432/join_meds
+    url: jdbc:postgresql://69.62.73.165:5432/join_meds
     username: yourusername
     password: 123ikm
+
   liquibase:
     drop-first: false
   jpa:
@@ -27,13 +28,15 @@ spring:
     storage:
       file-attachment-bucket: cpl-file-attachment-local
   file:
-    upload-dir: uploads
+    upload-dir: uploads/photos
+    resume-dir: uploads/resumes
 
   logging:
     level:
       org:
         springframework:
           security=DEBUG:
+
 email:
   api: https://api2.lsgkerala.gov.in/email/public/api/mail/v0/sendMail
 

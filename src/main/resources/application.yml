@@ -1,6 +1,6 @@
 server:
 #  servlet:
-#    context-path: /joinmeds-service
+  context-path: /joinmeds-service
   port: 8082
   address: 0.0.0.0
 
@@ -9,7 +9,7 @@ spring:
     url: jdbc:postgresql://69.62.73.165:5432/join_meds
     username: yourusername
     password: 123ikm
-    driver-class-name: org.postgresql.Driver
+
   servlet:
     multipart:
       max-file-size: 5MB
@@ -22,4 +22,5 @@ spring:
     properties:
       hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
 file:
-  upload-dir: uploads
+  upload-dir: uploads/photos
+  resume-dir: uploads/resumes
