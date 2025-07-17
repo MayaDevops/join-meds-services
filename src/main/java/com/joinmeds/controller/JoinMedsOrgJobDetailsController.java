@@ -62,4 +62,8 @@ public class JoinMedsOrgJobDetailsController {
     public ResponseEntity<List<JoinMedsOrgJobDetailsResDTO>> fetchByOrgUserId(@PathVariable UUID userId) {
         return ResponseEntity.ok(service.fetchByUserId(userId));
     }
+    @GetMapping("/list")
+    public ResponseEntity<List<JoinMedsOrgJobDetailsResDTO>> fetchAll() {
+        return ResponseEntity.ok(service.fetchAll());
+    }
 }

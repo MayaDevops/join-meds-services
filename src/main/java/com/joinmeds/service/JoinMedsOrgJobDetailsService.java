@@ -3,14 +3,20 @@ package com.joinmeds.service;
 
 import com.joinmeds.contract.JoinMedsOrgJobDetailsReqDTO;
 import com.joinmeds.contract.JoinMedsOrgJobDetailsResDTO;
+import com.joinmeds.contract.UserDetailsDTO;
 import com.joinmeds.model.JoinMedsOrgDetails;
 import com.joinmeds.model.JoinMedsOrgJobDetails;
+import com.joinmeds.model.UserDetails;
+import com.joinmeds.model.UserLogin;
 import com.joinmeds.respository.JoinMedsOrgDetailsRepository;
 import com.joinmeds.respository.JoinMedsOrgJobDetailsRepository;
 import com.joinmeds.respository.UserDetailsRepository;
+import com.joinmeds.respository.UserLoginRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,6 +25,7 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Data
 @RequiredArgsConstructor
@@ -26,6 +33,8 @@ public class JoinMedsOrgJobDetailsService {
 
     @Autowired
     private UserDetailsRepository userDetailsRepository;
+    @Autowired
+    private UserLoginRepository userLoginRepository;
 
     @Autowired
     private final JoinMedsOrgJobDetailsRepository joinOrgJobDetailsRepository;
@@ -107,12 +116,30 @@ public class JoinMedsOrgJobDetailsService {
                 .collect(Collectors.toList());
 
     }
+    public List<JoinMedsOrgJobDetailsResDTO> fetchAll() {
+        List<JoinMedsOrgJobDetails> entities = joinOrgJobDetailsRepository.findAll();
+
+        if (entities.isEmpty()) {
+            throw new NoSuchElementException("No job applications found.");
+        }
+
+        return entities.stream()
+                .filter(job -> Boolean.TRUE.equals(job.getIsActive()))
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
 
     private JoinMedsOrgJobDetailsResDTO mapToDTO(JoinMedsOrgJobDetails entity) {
-
+        String orgName = userLoginRepository
+                .findById(entity.getUserId())
+                .map(UserLogin::getOrgName)
+                .orElse("Unknown");
+log.info("Hiiiiiiiiiiiiii"+entity.getUserId());
         return JoinMedsOrgJobDetailsResDTO.builder()
                 .id(entity.getId())
                 .userId(entity.getUserId())
+                .orgName(orgName)
                 .orgId(entity.getOrgId())
                 .hiringFor(entity.getHiringFor())
                 .yearExp(entity.getYearExp())

@@ -1,13 +1,15 @@
 server:
   servlet:
-    context-path: /joinmeds-service
-  port: 8082
+#    context-path: /joinmeds-service
+  port: 8086
+
 
 spring:
   datasource:
-    url: jdbc:postgresql://1.69.62.73.165:5432/join_meds
+    url: jdbc:postgresql://69.62.73.165:5432/join_meds
     username: yourusername
     password: 123ikm
+    driver-class-name: org.postgresql.Driver
   liquibase:
     drop-first: false
   jpa:

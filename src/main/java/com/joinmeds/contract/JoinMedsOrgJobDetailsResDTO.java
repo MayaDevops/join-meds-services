@@ -25,5 +25,6 @@ public class JoinMedsOrgJobDetailsResDTO {
     private  String payTo;
     private  String payRange;
     private  String jobDesc;
+    private String orgName;
     private LocalDateTime createdAt;
 }

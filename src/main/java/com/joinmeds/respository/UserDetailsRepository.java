@@ -11,5 +11,6 @@ public interface UserDetailsRepository extends JpaRepository<UserDetails, UUID> 
     Optional<UserDetails> findByUserId(UUID userId);
     Optional<UserDetails> findById(UUID userId);
 
+
 }
 
