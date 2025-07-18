@@ -42,4 +42,6 @@ public class UserDetails {
     private String certification;
     private LocalDateTime createdAt;
     private UUID userId;
+    private String currentYear;
+    private String university;
 }

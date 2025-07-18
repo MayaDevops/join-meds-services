@@ -32,5 +32,7 @@ public class UserDetailsDTO {
     private String languageTestCleared;
     private String passportNumber;
     private String certification;
+    private String currentYear;
+    private String university;
     private UUID userId;
 }
