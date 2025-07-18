@@ -49,5 +49,16 @@ public class ResumeService {
 
         return filename;
     }
+    public byte[] loadImage(String filename) throws IOException {
+        Path filePath = Paths.get(RESUME_UPLOAD_DIR).resolve(filename).normalize();
+        return Files.readAllBytes(filePath);
+    }
+
+    private String getFileExtension(String filename) {
+        if (filename == null || !filename.contains(".")) {
+            throw new IllegalArgumentException("Invalid file name");
+        }
+        return filename.substring(filename.lastIndexOf('.') + 1);
+    }
 }
 

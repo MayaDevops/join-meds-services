@@ -2,11 +2,14 @@ package com.joinmeds.controller;
 
 import com.joinmeds.service.ResumeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @RestController
@@ -31,6 +34,18 @@ public class ResumeController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error uploading resume: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/{filename}")
+    public ResponseEntity<byte[]> getImage(@PathVariable String filename) {
+        try {
+            byte[] image = resumeService.loadImage(filename);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_JPEG); // consider MIME detection
+            return new ResponseEntity<>(image, headers, HttpStatus.OK);
+        } catch (IOException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }
