@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -105,6 +106,19 @@ public class JoinMedsOrgJobDetailsService {
 
     public List<JoinMedsOrgJobDetailsResDTO> fetchByUserId(UUID id) {
         List<JoinMedsOrgJobDetails> entities = joinOrgJobDetailsRepository.findByUserId(id);
+
+        if (entities.isEmpty()) {
+            throw new NoSuchElementException("Job applications not found with user ID: " + id);
+        }
+
+        return entities.stream()
+                .filter(job -> Boolean.TRUE.equals(job.getIsActive()))
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+
+    }
+    public List<JoinMedsOrgJobDetailsResDTO> fetchById(UUID id) {
+        Optional<JoinMedsOrgJobDetails> entities = joinOrgJobDetailsRepository.findById(id);
 
         if (entities.isEmpty()) {
             throw new NoSuchElementException("Job applications not found with user ID: " + id);

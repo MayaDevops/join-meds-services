@@ -72,4 +72,9 @@ public class JoinMedsOrgJobDetailsController {
         return ResponseEntity.ok(service.fetchByHiringFor(keyword));
     }
 
+    @GetMapping("/fetch/{jobId}")
+    public ResponseEntity<List<JoinMedsOrgJobDetailsResDTO>> fetchById(@PathVariable UUID jobId) {
+        return ResponseEntity.ok(service.fetchById(jobId));
+    }
+
 }
