@@ -129,6 +129,21 @@ public class JoinMedsOrgJobDetailsService {
                 .collect(Collectors.toList());
     }
 
+    public List<JoinMedsOrgJobDetailsResDTO> fetchByHiringFor(String keyword) {
+        List<JoinMedsOrgJobDetails> entities =
+                joinOrgJobDetailsRepository.findByHiringForContainingIgnoreCase(keyword);
+
+        if (entities.isEmpty()) {
+            throw new NoSuchElementException("No job applications found.");
+        }
+
+        return entities.stream()
+                .filter(job -> Boolean.TRUE.equals(job.getIsActive()))
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+
 
     private JoinMedsOrgJobDetailsResDTO mapToDTO(JoinMedsOrgJobDetails entity) {
         String orgName = userLoginRepository

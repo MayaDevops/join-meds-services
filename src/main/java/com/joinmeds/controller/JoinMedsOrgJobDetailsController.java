@@ -66,4 +66,10 @@ public class JoinMedsOrgJobDetailsController {
     public ResponseEntity<List<JoinMedsOrgJobDetailsResDTO>> fetchAll() {
         return ResponseEntity.ok(service.fetchAll());
     }
+
+    @GetMapping("/list/hiring-for/{keyword}")
+    public ResponseEntity<List<JoinMedsOrgJobDetailsResDTO>> fetchByHiringFor(@PathVariable String keyword) {
+        return ResponseEntity.ok(service.fetchByHiringFor(keyword));
+    }
+
 }

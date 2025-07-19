@@ -8,4 +8,7 @@ import java.util.UUID;
 
 public interface JoinMedsOrgJobDetailsRepository extends JpaRepository<JoinMedsOrgJobDetails, UUID> {
     List<JoinMedsOrgJobDetails> findByUserId(UUID userId);
+    List<JoinMedsOrgJobDetails> findByHiringFor(String hiringFor);
+    List<JoinMedsOrgJobDetails> findByHiringForContainingIgnoreCase(String keyword);
+
 }
