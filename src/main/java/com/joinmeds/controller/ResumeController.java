@@ -2,10 +2,7 @@ package com.joinmeds.controller;
 
 import com.joinmeds.service.ResumeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,12 +37,16 @@ public class ResumeController {
     @GetMapping("/{filename}")
     public ResponseEntity<byte[]> getImage(@PathVariable String filename) {
         try {
-            byte[] image = resumeService.loadImage(filename);
+            byte[] fileData = resumeService.loadImage(filename);
+
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.IMAGE_JPEG); // consider MIME detection
-            return new ResponseEntity<>(image, headers, HttpStatus.OK);
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDisposition(ContentDisposition.attachment().filename(filename).build());
+
+            return new ResponseEntity<>(fileData, headers, HttpStatus.OK);
         } catch (IOException e) {
             return ResponseEntity.notFound().build();
         }
     }
+
 }
