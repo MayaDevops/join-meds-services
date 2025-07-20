@@ -1,8 +1,8 @@
 package com.joinmeds.service;
 import com.joinmeds.contract.JobAppliedRequest;
 import com.joinmeds.contract.JobAppliedResponse;
-import com.joinmeds.model.JobApplied;
-import com.joinmeds.respository.JobAppliedRepository;
+import com.joinmeds.model.*;
+import com.joinmeds.respository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +16,10 @@ import java.util.stream.Collectors;
 public class JobAppliedService {
 
     private final JobAppliedRepository repository;
+    private final JoinMedsOrgDetailsRepository orgDetailsRepository;
+    private final UserDetailsRepository userDetailsRepository;
+    private final JoinMedsOrgJobDetailsRepository joinMedsOrgJobDetailsRepository;
+    private final UserLoginRepository userLoginRepository;
 
     public JobAppliedResponse saveApplication(JobAppliedRequest request) {
         JobApplied job = JobApplied.builder()
@@ -38,17 +42,58 @@ public class JobAppliedService {
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
-
     private JobAppliedResponse toResponse(JobApplied entity) {
+        // Fetch org name using orgId
+        String hiringFor = joinMedsOrgJobDetailsRepository.findById(entity.getJobId())
+                .map(JoinMedsOrgJobDetails::getHiringFor)
+                .orElse(null);
+        String orgName = userLoginRepository.findById(entity.getOrgId())
+                .map(UserLogin::getOrgName)
+                .orElse(null);
+        String emailMobile = userLoginRepository.findById(entity.getUserId())
+                .map(UserLogin::getEmailMobile)
+                .orElse(null);
+
+        String natureJob = joinMedsOrgJobDetailsRepository.findById(entity.getJobId())
+                .map(JoinMedsOrgJobDetails::getNatureJob)
+                .orElse(null);
+        String payFrom = joinMedsOrgJobDetailsRepository.findById(entity.getJobId())
+                .map(JoinMedsOrgJobDetails::getPayFrom)
+                .orElse(null);
+        String payTo = joinMedsOrgJobDetailsRepository.findById(entity.getJobId())
+                .map(JoinMedsOrgJobDetails::getPayTo)
+                .orElse(null);
+        String payRange = joinMedsOrgJobDetailsRepository.findById(entity.getJobId())
+                .map(JoinMedsOrgJobDetails::getPayRange)
+                .orElse(null);
+
+        // Fetch user full name using userId
+        String fullName = userDetailsRepository.findByUserId(entity.getUserId())
+                .map(UserDetails::getFullname)
+                .orElse(null);
+        String email = userDetailsRepository.findByUserId(entity.getUserId())
+                .map(UserDetails::getEmail)
+                .orElse(null);
+
         return JobAppliedResponse.builder()
                 .id(entity.getId())
                 .userId(entity.getUserId())
                 .orgId(entity.getOrgId())
                 .jobId(entity.getJobId())
-                .status(entity.getStatus())
                 .resumeId(entity.getResumeId())
                 .submittedAt(entity.getSubmittedAt())
+                .status(entity.getStatus())
+                .hiringFor(hiringFor)
+                .orgName(orgName)
+                .emailMobile(emailMobile)
+                .natureJob(natureJob)
+                .payFrom(payFrom)
+                .email(email)
+                .payTo(payTo)
+                .payRange(payRange)
+                .fullname(fullName)
                 .build();
+
     }
 
     public List<JobAppliedResponse> searchApplications(UUID userId, UUID jobId,UUID orgId, UUID id) {

@@ -1,7 +1,7 @@
 server:
   servlet:
 #    context-path: /joinmeds-service
-  port: 8083
+  port: 8086
 
 spring:
   datasource:

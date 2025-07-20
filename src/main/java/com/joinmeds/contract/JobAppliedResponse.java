@@ -13,12 +13,18 @@ public class JobAppliedResponse {
     private UUID id;
     private UUID userId;
     private UUID orgId;
-    private UUID orgName;
+    private String orgName;
+    private String fullname;
     private String hiringFor;
+    private String natureJob;
     private String emailMobile;
+    private String email;
     private UUID jobId;
     private String resumeId;
     private LocalDateTime submittedAt;
+    private String payFrom;
+    private String payTo;
+    private String payRange;
     private String status;
 }
 
