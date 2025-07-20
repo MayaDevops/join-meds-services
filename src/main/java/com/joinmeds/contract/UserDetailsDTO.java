@@ -34,5 +34,10 @@ public class UserDetailsDTO {
     private String certification;
     private String currentYear;
     private String university;
+    private String academicQualification;
+    private String foreignCountryWorked;
+    private String foreignCountryWorkExp;
+    private String languageTestScore;
+
     private UUID userId;
 }

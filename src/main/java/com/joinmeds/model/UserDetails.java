@@ -44,4 +44,9 @@ public class UserDetails {
     private UUID userId;
     private String currentYear;
     private String university;
+    private String academicQualification;
+    private String foreignCountryWorked;
+    private String foreignCountryWorkExp;
+    private String languageTestScore;
+
 }
