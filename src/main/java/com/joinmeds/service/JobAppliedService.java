@@ -34,7 +34,7 @@ public class JobAppliedService {
     }
 
     public List<JobAppliedResponse> getById(UUID userId) {
-        return repository.findById(userId).stream()
+        return repository.findByUserId(userId).stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
