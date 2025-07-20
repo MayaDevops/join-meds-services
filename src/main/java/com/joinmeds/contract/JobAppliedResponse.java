@@ -17,8 +17,8 @@ public class JobAppliedResponse {
     private String hiringFor;
     private String emailMobile;
     private UUID jobId;
-    private String applicantName;
     private String resumeId;
     private LocalDateTime submittedAt;
+    private String status;
 }
 

@@ -15,6 +15,7 @@ import java.util.UUID;
 public class JobApplied {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "user_id")
@@ -34,4 +35,6 @@ public class JobApplied {
 
     @Column(name = "submitted_at")
     private LocalDateTime submittedAt;
+    @Column(name = "status")
+    private String status;
 }

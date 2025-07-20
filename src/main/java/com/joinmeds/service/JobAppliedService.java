@@ -19,13 +19,13 @@ public class JobAppliedService {
 
     public JobAppliedResponse saveApplication(JobAppliedRequest request) {
         JobApplied job = JobApplied.builder()
-                .id(UUID.randomUUID())
                 .userId(request.getUserId())
                 .orgId(request.getOrgId())
                 .jobId(request.getJobId())
                 .applicantName(request.getApplicantName())
                 .resumeId(request.getResumeId())
                 .submittedAt(LocalDateTime.now())
+                .status("APPLIED")
                 .build();
 
         JobApplied saved = repository.save(job);
@@ -45,7 +45,7 @@ public class JobAppliedService {
                 .userId(entity.getUserId())
                 .orgId(entity.getOrgId())
                 .jobId(entity.getJobId())
-                .applicantName(entity.getApplicantName())
+                .status(entity.getStatus())
                 .resumeId(entity.getResumeId())
                 .submittedAt(entity.getSubmittedAt())
                 .build();

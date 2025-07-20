@@ -16,5 +16,6 @@ public class JobAppliedRequest {
     private UUID jobId;
     private String applicantName;
     private String resumeId;
+    private String status;
 }
 

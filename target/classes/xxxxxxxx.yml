@@ -1,0 +1,43 @@
+server:
+  servlet:
+#    context-path: /joinmeds-service
+  port: 8082
+
+spring:
+  datasource:
+    url: jdbc:postgresql://69.62.73.165:5432/join_meds
+    username: yourusername
+    password: 123ikm
+
+  liquibase:
+    drop-first: false
+  jpa:
+    open-in-view: false
+    show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+  minio:
+    url : http://localhost:9000/
+    access-key: N6lxUbKWCtcPb6kqHfat
+    secret-key: q3mSbwQHpj3l36CW8yn8bPpktaCQKAK45hxgU0EL
+
+  application:
+    storage:
+      file-attachment-bucket: cpl-file-attachment-local
+  file:
+    upload-dir: uploads/photos
+    resume-dir: uploads/resumes
+
+  logging:
+    level:
+      org:
+        springframework:
+          security=DEBUG:
+
+email:
+  api: https://api2.lsgkerala.gov.in/email/public/api/mail/v0/sendMail
+
+
