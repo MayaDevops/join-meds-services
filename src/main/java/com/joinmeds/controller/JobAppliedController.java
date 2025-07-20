@@ -28,10 +28,11 @@ public class JobAppliedController {
     @GetMapping("/search")
     public ResponseEntity<List<JobAppliedResponse>> getApplications(
             @RequestParam(required = false) UUID userId,
+            @RequestParam(required = false) UUID jobId,
             @RequestParam(required = false) UUID orgId,
             @RequestParam(required = false) UUID id
     ) {
-        return ResponseEntity.ok(service.searchApplications(userId, orgId, id));
+        return ResponseEntity.ok(service.searchApplications(userId,jobId, orgId, id));
     }
 
 }

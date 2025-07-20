@@ -51,12 +51,13 @@ public class JobAppliedService {
                 .build();
     }
 
-    public List<JobAppliedResponse> searchApplications(UUID userId, UUID orgId, UUID id) {
+    public List<JobAppliedResponse> searchApplications(UUID userId, UUID jobId,UUID orgId, UUID id) {
         List<JobApplied> all = repository.findAll();
 
         return all.stream()
                 .filter(app -> userId == null || userId.equals(app.getUserId()))
                 .filter(app -> orgId == null || orgId.equals(app.getOrgId()))
+                .filter(app -> jobId == null || jobId.equals(app.getJobId()))
                 .filter(app -> id == null || id.equals(app.getId()))
                 .map(this::toResponse)
                 .collect(Collectors.toList());
