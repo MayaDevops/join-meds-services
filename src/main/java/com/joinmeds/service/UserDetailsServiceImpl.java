@@ -50,6 +50,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (dto.getForeignTestDetails() != null) entity.setForeignTestDetails(dto.getForeignTestDetails());
         if (dto.getCertification() != null) entity.setCertification(dto.getCertification());
         if (dto.getAadhaarNo() != null) entity.setAadhaarNo(dto.getAadhaarNo());
+        if (dto.getPhdStatus() != null) entity.setPhdStatus(dto.getPhdStatus());
+        if (dto.getWorkExperience() != null) entity.setWorkExperience(dto.getWorkExperience());
+        if (dto.getSpeciality() != null) entity.setSpeciality(dto.getSpeciality());
         if (dto.getCurrentYear() != null) entity.setCurrentYear(dto.getCurrentYear());
         if (dto.getUniversity() != null) entity.setUniversity(dto.getUniversity());
         if (dto.getForeignCountryWorked() != null) entity.setForeignCountryWorked(dto.getForeignCountryWorked());
