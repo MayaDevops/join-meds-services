@@ -26,11 +26,12 @@ file:
   resume-dir: uploads/resumes
 
 smsbuddy:
-    url: https://thesmsbuddy.com/api/sms/send
-    key: jKRvNILbt9W70LLJpE7hbS8Ifu5y3nto
-    sender: JNMEDS
-    type: 1
-    templateId: "1707176562443508690"
+  sendUrl: https://thesmsbuddy.com/api/v1/sms/send
+  verifyUrl: https://thesmsbuddy.com/api/v1/otp/verify
+  key: jKRvNILbt9W70LLJpE7hbS8Ifu5y3nto
+  sender: JNMEDS
+  type: 1
+  templateId: "1707176562443508690"
 
 otp:
     expiry:

@@ -1,8 +1,5 @@
 package com.joinmeds.model;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -44,7 +41,6 @@ public class OtpLog {
     private Integer httpStatus;
 
     private Integer charges;
-
     private Integer unit;
 
     @Column(name = "sms_length")

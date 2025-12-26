@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SmsBuddySendResponse {
-    private String status;   // "200"
+    private String status;
     private Integer charges;
     private String message;
     private List<SmsBuddyData> data;

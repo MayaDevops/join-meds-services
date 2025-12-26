@@ -7,7 +7,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface OtpLogRepository extends JpaRepository<OtpLog, UUID> {
-
     Optional<OtpLog> findTopByMobileOrderByCreatedAtDesc(String mobile);
-
 }
