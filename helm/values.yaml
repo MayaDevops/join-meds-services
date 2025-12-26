@@ -1,0 +1,26 @@
+image:
+  repository: myregistry.com/join-meds-app
+  tag: latest
+  pullPolicy: IfNotPresent
+
+env:
+  - name: SPRING_PROFILES_ACTIVE
+    value: prod
+  - name: SMS_API_URL
+    valueFrom:
+      configMapKeyRef:
+        name: join-meds-config
+        key: sms.api.url
+
+secretEnv:
+  - name: SMS_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: join-meds-secret
+        key: sms.api.key
+
+config:
+  sms.api.url: https://thesmsbuddy.com/api/v1/sms/send
+
+secret:
+  sms.api.key: tkHxIQoJ5Opg7Z7BsCyfhGMk0UnmklUp

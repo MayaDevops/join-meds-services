@@ -40,4 +40,15 @@ spring:
 email:
   api: https://api2.lsgkerala.gov.in/email/public/api/mail/v0/sendMail
 
+smsbuddy:
+     url: https://thesmsbuddy.com/api/sms/send
+     key: jKRvNILbt9W70LLJpE7hbS8Ifu5y3nto
+     sender: JNMEDS
+     type: 1
+     templateId: "1707176562443508690"
+
+otp:
+   expiry:
+     minutes: 5
+
 

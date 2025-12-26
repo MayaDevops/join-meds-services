@@ -1,38 +1,30 @@
 package com.joinmeds.service;
 
-import com.joinmeds.contract.SignupRequest;
-import com.joinmeds.contract.SignupResponse;
-import com.joinmeds.contract.UserDetailsDTO;
+import com.joinmeds.contract.*;
 import com.joinmeds.model.JoinMedsOrgDetails;
 import com.joinmeds.model.UserDetails;
 import com.joinmeds.model.UserLogin;
 import com.joinmeds.respository.JoinMedsOrgDetailsRepository;
 import com.joinmeds.respository.UserDetailsRepository;
 import com.joinmeds.respository.UserLoginRepository;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
-@Data
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class SignupService {
-    @Autowired
-    private UserLoginRepository userLoginRepository;
 
-    @Autowired
-    private UserDetailsRepository userDetailsRepository;
+    private final UserLoginRepository userLoginRepository;
+    private final UserDetailsRepository userDetailsRepository;
+    private final JoinMedsOrgDetailsRepository joinMedsOrgDetailsRepository;
+    private final PasswordEncoder passwordEncoder;   // ✅ FIXED
 
-    @Autowired
-    private JoinMedsOrgDetailsRepository joinMedsOrgDetailsRepository;
-
+    // ---------------- SIGNUP ----------------
     public UUID registerUser(SignupRequest request) {
 
         if (!request.password.equals(request.confirmPassword)) {
@@ -44,7 +36,7 @@ public class SignupService {
         }
 
         UserLogin userLogin = new UserLogin();
-        userLogin.setPassword(request.password);
+        userLogin.setPassword(passwordEncoder.encode(request.password)); // ✅ HASHED
         userLogin.setEmailMobile(request.emailMobile);
         userLogin.setOfficePhone(request.officialPhone);
         userLogin.setOrgName(request.orgName);
@@ -53,68 +45,40 @@ public class SignupService {
         userLogin.setUserType(request.userType);
         userLogin.setCreatedAt(Instant.now());
         userLogin.setUsername(request.emailMobile);
+
         userLoginRepository.save(userLogin);
 
-        if(request.userType.equals("ORGANIZATION")) {
-            JoinMedsOrgDetails joinMedsOrgDetails=new JoinMedsOrgDetails();
-            joinMedsOrgDetails.setUserId(userLogin.getId());
-            joinMedsOrgDetailsRepository.save(joinMedsOrgDetails);
+        if ("ORGANIZATION".equals(request.userType)) {
+            JoinMedsOrgDetails orgDetails = new JoinMedsOrgDetails();
+            orgDetails.setUserId(userLogin.getId());
+            joinMedsOrgDetailsRepository.save(orgDetails);
         } else {
             UserDetails userDetails = new UserDetails();
             userDetails.setUserId(userLogin.getId());
             userDetailsRepository.save(userDetails);
         }
-        UserLogin savedUser = userLoginRepository.save(userLogin);
-        return savedUser.getId(); // return ID
+
+        return userLogin.getId();
     }
 
-//    public String registerUser(SignupRequest request) {
-//        if (!request.password.equals(request.confirmPassword)) {
-//            throw new IllegalArgumentException("Passwords do not match.");
-//        }
-//
-//        if (userLoginRepository.findByEmailMobile(request.emailMobile).isPresent()) {
-//            throw new IllegalArgumentException("User already exists with this email/mobile.");
-//        }
-//
-//        UserLogin userLogin = new UserLogin();
-//        userLogin.setPassword(request.password);
-//        userLogin.setEmailMobile(request.emailMobile);
-//        userLogin.setOfficePhone(request.officialPhone);
-//        userLogin.setOrgName(request.orgName);
-//        userLogin.setOfficialEmail(request.officialEmail);
-//        userLogin.setIncorporationNo(request.incorporationNo);
-//        userLogin.setUserType(request.userType);
-//        userLogin.setCreatedAt(Instant.now());
-//        userLogin.setUsername(request.emailMobile);
-//        userLoginRepository.save(userLogin);
-//        UserDetails userDetails=new UserDetails();
-//        userDetails.setUserId(userLogin.getId());
-//        userDetailsRepository.save(userDetails);
-//        return "User registered successfully.";
-//    }
-
+    // ---------------- UPDATE ----------------
     public String updateUserById(UUID id, SignupRequest request) {
         UserLogin userLogin = userLoginRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("User not found."));
 
         if (request.emailMobile != null) userLogin.setEmailMobile(request.emailMobile);
-        if (request.password != null) userLogin.setPassword(request.password);
+        if (request.password != null)
+            userLogin.setPassword(passwordEncoder.encode(request.password)); // ✅ HASHED
         if (request.officialPhone != null) userLogin.setOfficePhone(request.officialPhone);
         if (request.orgName != null) userLogin.setOrgName(request.orgName);
         if (request.officialEmail != null) userLogin.setOfficialEmail(request.officialEmail);
         if (request.incorporationNo != null) userLogin.setIncorporationNo(request.incorporationNo);
+
         userLoginRepository.save(userLogin);
-        userLoginRepository.findById(id).ifPresent(details -> {
-
-            userLoginRepository.save(details);
-        });
-
         return "User updated successfully.";
     }
 
-
-
+    // ---------------- FETCH ----------------
     public SignupResponse fetchUserById(UUID id) {
         UserLogin userLogin = userLoginRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + id));
@@ -128,13 +92,44 @@ public class SignupService {
         response.setIncorporationNo(userLogin.getIncorporationNo());
         response.setCreatedAt(userLogin.getCreatedAt());
         response.setUserType(userLogin.getUserType());
-        response.setPassword(userLogin.getPassword());
         response.setUsername(userLogin.getUsername());
 
         return response;
     }
 
+    // ---------------- RESET PASSWORD ----------------
+    public ResetPasswordResponse resetPassword(ResetPasswordRequest request) {
 
+        String mobile = request.getMobileNumber() == null ? "" : request.getMobileNumber().trim();
+        if (mobile.isEmpty()) {
+            return ResetPasswordResponse.builder()
+                    .success(false)
+                    .message("Mobile number is required")
+                    .build();
+        }
 
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            return ResetPasswordResponse.builder()
+                    .success(false)
+                    .message("New password and confirm password do not match")
+                    .build();
+        }
 
+        UserLogin user = userLoginRepository.findByEmailMobile(mobile).orElse(null);
+
+        if (user == null) {
+            return ResetPasswordResponse.builder()
+                    .success(false)
+                    .message("User not found for the given mobile number")
+                    .build();
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword())); // ✅ HASHED
+        userLoginRepository.save(user);
+
+        return ResetPasswordResponse.builder()
+                .success(true)
+                .message("Password reset successfully")
+                .build();
+    }
 }

@@ -1,7 +1,7 @@
 server:
 #  servlet:
   context-path: /joinmeds-service
-  port: 8081
+  port: 8082
   address: 0.0.0.0
 
 spring:
@@ -24,3 +24,14 @@ spring:
 file:
   upload-dir: uploads/photos
   resume-dir: uploads/resumes
+
+smsbuddy:
+    url: https://thesmsbuddy.com/api/sms/send
+    key: jKRvNILbt9W70LLJpE7hbS8Ifu5y3nto
+    sender: JNMEDS
+    type: 1
+    templateId: "1707176562443508690"
+
+otp:
+    expiry:
+      minutes: 5

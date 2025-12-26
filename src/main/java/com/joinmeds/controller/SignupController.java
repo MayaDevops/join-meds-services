@@ -1,15 +1,13 @@
 package com.joinmeds.controller;
 
 import com.joinmeds.common.SecureSwaggerController;
-import com.joinmeds.contract.LoginRequest;
-import com.joinmeds.contract.Response;
-import com.joinmeds.contract.SignupRequest;
-import com.joinmeds.contract.SignupResponse;
+import com.joinmeds.contract.*;
 import com.joinmeds.model.UserLogin;
 import com.joinmeds.respository.UserDetailsRepository;
 import com.joinmeds.respository.UserLoginRepository;
 import com.joinmeds.service.SignupService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -76,5 +74,11 @@ public class SignupController implements SecureSwaggerController {
         } else {
             return ResponseEntity.status(401).body("Invalid username or password");
         }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ResetPasswordResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        ResetPasswordResponse response = signupService.resetPassword(request);
+        return ResponseEntity.ok(response);
     }
 }
