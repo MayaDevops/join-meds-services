@@ -60,7 +60,7 @@ public class JoinMedsOrgJobDetailsService {
        joinOrgJobDetails.setPayTo(request.getPayTo());
        joinOrgJobDetails.setPayRange(request.getPayRange());
        joinOrgJobDetails.setJobDesc(request.getJobDesc());
-       joinOrgJobDetails.setCreatedAt(LocalDateTime.now());
+      // joinOrgJobDetails.setCreatedAt(LocalDateTime.now());
        joinOrgJobDetails.setIsActive(true);
 
        joinOrgJobDetailsRepository.save(joinOrgJobDetails);
@@ -178,7 +178,7 @@ log.info("Hiiiiiiiiiiiiii"+entity.getUserId());
                 .payTo(entity.getPayTo())
                 .payRange(entity.getPayRange())
                 .jobDesc(entity.getJobDesc())
-                .createdAt(entity.getCreatedAt())
+              //  .createdAt(entity.getCreatedAt())
                 .build();
     }
 
