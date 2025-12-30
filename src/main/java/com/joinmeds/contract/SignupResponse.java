@@ -18,7 +18,7 @@ public class SignupResponse {
     public String officialPhone;
     public String incorporationNo;
     public String emailMobile;
-    public Instant createdAt;
+    public String createdAt;
     public String userType;
     public String username;
     public String password;

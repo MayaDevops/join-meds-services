@@ -43,7 +43,7 @@ public class SignupService {
         userLogin.setOfficialEmail(request.officialEmail);
         userLogin.setIncorporationNo(request.incorporationNo);
         userLogin.setUserType(request.userType);
-        userLogin.setCreatedAt(Instant.now());
+        userLogin.setCreatedAt(String.valueOf(Instant.now()));
         userLogin.setUsername(request.emailMobile);
 
         userLoginRepository.save(userLogin);

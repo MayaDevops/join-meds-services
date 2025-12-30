@@ -26,6 +26,6 @@ public class UserLogin {
     private String incorporationNo;
     private String officialEmail;
     private String officePhone;
-    private Instant createdAt;
+    private String createdAt;
   }
 
