@@ -100,7 +100,10 @@ public class SignupService {
     // ---------------- RESET PASSWORD ----------------
     public ResetPasswordResponse resetPassword(ResetPasswordRequest request) {
 
-        String mobile = request.getMobileNumber() == null ? "" : request.getMobileNumber().trim();
+        String mobile = request.getMobileNumber() == null
+                ? ""
+                : request.getMobileNumber().trim();
+
         if (mobile.isEmpty()) {
             return ResetPasswordResponse.builder()
                     .success(false)
@@ -124,7 +127,9 @@ public class SignupService {
                     .build();
         }
 
-        user.setPassword(passwordEncoder.encode(request.getNewPassword())); // ✅ HASHED
+        // ❌ Removed password encoding
+        user.setPassword(request.getNewPassword());
+
         userLoginRepository.save(user);
 
         return ResetPasswordResponse.builder()
@@ -132,4 +137,38 @@ public class SignupService {
                 .message("Password reset successfully")
                 .build();
     }
+//    public ResetPasswordResponse resetPassword(ResetPasswordRequest request) {
+//
+//        String mobile = request.getMobileNumber() == null ? "" : request.getMobileNumber().trim();
+//        if (mobile.isEmpty()) {
+//            return ResetPasswordResponse.builder()
+//                    .success(false)
+//                    .message("Mobile number is required")
+//                    .build();
+//        }
+//
+//        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+//            return ResetPasswordResponse.builder()
+//                    .success(false)
+//                    .message("New password and confirm password do not match")
+//                    .build();
+//        }
+//
+//        UserLogin user = userLoginRepository.findByEmailMobile(mobile).orElse(null);
+//
+//        if (user == null) {
+//            return ResetPasswordResponse.builder()
+//                    .success(false)
+//                    .message("User not found for the given mobile number")
+//                    .build();
+//        }
+//
+//        user.setPassword(passwordEncoder.encode(request.getNewPassword())); // ✅ HASHED
+//        userLoginRepository.save(user);
+//
+//        return ResetPasswordResponse.builder()
+//                .success(true)
+//                .message("Password reset successfully")
+//                .build();
+//    }
 }

@@ -21,7 +21,6 @@ public class SignupResponse {
     public String createdAt;
     public String userType;
     public String username;
-    public String password;
     private UUID userId;
     private String message;
     private int statusCode;
