@@ -36,7 +36,7 @@ public class SignupService {
         }
 
         UserLogin userLogin = new UserLogin();
-        userLogin.setPassword(passwordEncoder.encode(request.password)); // ✅ HASHED
+        userLogin.setPassword(request.password); // ✅ HASHED
         userLogin.setEmailMobile(request.emailMobile);
         userLogin.setOfficePhone(request.officialPhone);
         userLogin.setOrgName(request.orgName);

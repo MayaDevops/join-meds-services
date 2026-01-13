@@ -38,6 +38,5 @@ public class UserDetailsDTO {
     private String foreignCountryWorked;
     private String foreignCountryWorkExp;
     private String languageTestScore;
-
     private UUID userId;
 }
