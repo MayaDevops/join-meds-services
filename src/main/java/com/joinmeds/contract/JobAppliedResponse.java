@@ -1,4 +1,5 @@
 package com.joinmeds.contract;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,7 +22,8 @@ public class JobAppliedResponse {
     private String email;
     private UUID jobId;
     private String resumeId;
-    private LocalDateTime submittedAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private String submittedAt;
     private String payFrom;
     private String payTo;
     private String payRange;
