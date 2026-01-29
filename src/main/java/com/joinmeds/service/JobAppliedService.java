@@ -81,7 +81,7 @@ public class JobAppliedService {
                 .orgId(entity.getOrgId())
                 .jobId(entity.getJobId())
                 .resumeId(entity.getResumeId())
-                .submittedAt(entity.getSubmittedAt())
+                .submittedAt(String.valueOf(entity.getSubmittedAt()))
                 .status(entity.getStatus())
                 .hiringFor(hiringFor)
                 .orgName(orgName)
