@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -96,16 +97,47 @@ public class JobAppliedService {
 
     }
 
-    public List<JobAppliedResponse> searchApplications(UUID userId, UUID jobId,UUID orgId, UUID id) {
-        List<JobApplied> all = repository.findAll();
 
-        return all.stream()
-                .filter(app -> userId == null || userId.equals(app.getUserId()))
-                .filter(app -> orgId == null || orgId.equals(app.getOrgId()))
-                .filter(app -> jobId == null || jobId.equals(app.getJobId()))
-                .filter(app -> id == null || id.equals(app.getId()))
-                .map(this::toResponse)
-                .collect(Collectors.toList());
+
+//    public List<JobAppliedResponse> searchApplications(UUID userId, UUID jobId,UUID orgId, UUID id) {
+//        List<JobApplied> all = repository.findAll();
+//
+//        return all.stream()
+//                .filter(app -> userId == null || userId.equals(app.getUserId()))
+//                .filter(app -> orgId == null || orgId.equals(app.getOrgId()))
+//                .filter(app -> jobId == null || jobId.equals(app.getJobId()))
+//                .filter(app -> id == null || id.equals(app.getId()))
+//                .map(this::toResponse)
+//                .collect(Collectors.toList());
+//    }
+public List<JobAppliedResponse> searchApplications(UUID userId, UUID jobId, UUID orgId, UUID id) {
+    return repository.search(userId, jobId, orgId, id)
+            .stream()
+            .map(this::toTableResponse)
+            .toList();
+}
+    private JobAppliedResponse toTableResponse(JobApplied app) {
+        JobAppliedResponse res = new JobAppliedResponse();
+        res.setId(app.getId());
+        res.setUserId(app.getUserId());
+        res.setOrgId(app.getOrgId());
+        res.setJobId(app.getJobId());
+        res.setResumeId(app.getResumeId());
+        res.setSubmittedAt(app.getSubmittedAt() != null
+                ? app.getSubmittedAt().toString()
+                : null);
+        res.setStatus(app.getStatus());
+
+//        res.setHiringFor(a);
+//        res.setOrgName(orgName);
+//        res.setEmailMobile(emailMobile);
+//        res.setNatureJob(natureJob);
+//        res.setPayFrom(payFrom);
+//        res.setPayTo(payTo);
+//        res.setPayRange(payRange);
+//        res.setEmail(email);
+//        res.setFullname(fullName);
+        return res;
     }
 
 }
