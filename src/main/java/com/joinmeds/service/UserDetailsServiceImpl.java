@@ -2,14 +2,19 @@ package com.joinmeds.service;
 
 import com.joinmeds.contract.UserDetailsDTO;
 import com.joinmeds.model.UserDetails;
+import com.joinmeds.model.UserLogin;
 import com.joinmeds.respository.UserDetailsRepository;
+import com.joinmeds.respository.UserLoginRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -18,6 +23,7 @@ import java.util.stream.Collectors;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserDetailsRepository repo;
+    private final UserLoginRepository userLoginRepository;
 
     @Override
     public UserDetailsDTO save(UserDetailsDTO dto) {
@@ -76,6 +82,25 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public List<UserDetailsDTO> fetchAll() {
         return repo.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<UserDetailsDTO> fetchAll(int page, int size) {
+        Page<UserDetails> pageResult = repo.findAll(PageRequest.of(page, size));
+
+        Set<UUID> userIds = pageResult.getContent().stream()
+                .map(UserDetails::getUserId)
+                .filter(id -> id != null)
+                .collect(Collectors.toSet());
+
+        Map<UUID, String> usernameMap = userLoginRepository.findAllById(userIds).stream()
+                .collect(Collectors.toMap(UserLogin::getId, UserLogin::getUsername));
+
+        return pageResult.map(entity -> {
+            UserDetailsDTO dto = mapToDTO(entity);
+            dto.setUsername(usernameMap.get(entity.getUserId()));
+            return dto;
+        });
     }
 
     private UserDetailsDTO mapToDTO(UserDetails entity) {
