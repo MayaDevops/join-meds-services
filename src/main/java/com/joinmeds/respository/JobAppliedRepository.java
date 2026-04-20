@@ -1,5 +1,7 @@
 package com.joinmeds.respository;
 import com.joinmeds.model.JobApplied;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -18,5 +20,21 @@ public interface JobAppliedRepository extends JpaRepository<JobApplied, UUID> {
         ORDER BY a.submittedAt DESC
     """)
     List<JobApplied> search(UUID userId, UUID jobId, UUID orgId, UUID id);
+
+    @Query(value = """
+        SELECT a FROM JobApplied a
+        WHERE (:userId IS NULL OR a.userId = :userId)
+          AND (:jobId  IS NULL OR a.jobId  = :jobId)
+          AND (:orgId  IS NULL OR a.orgId  = :orgId)
+          AND (:id     IS NULL OR a.id     = :id)
+    """,
+    countQuery = """
+        SELECT COUNT(a) FROM JobApplied a
+        WHERE (:userId IS NULL OR a.userId = :userId)
+          AND (:jobId  IS NULL OR a.jobId  = :jobId)
+          AND (:orgId  IS NULL OR a.orgId  = :orgId)
+          AND (:id     IS NULL OR a.id     = :id)
+    """)
+    Page<JobApplied> search(UUID userId, UUID jobId, UUID orgId, UUID id, Pageable pageable);
 }
 

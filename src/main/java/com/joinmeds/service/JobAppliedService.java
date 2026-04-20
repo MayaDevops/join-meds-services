@@ -4,6 +4,9 @@ import com.joinmeds.contract.JobAppliedResponse;
 import com.joinmeds.model.*;
 import com.joinmeds.respository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -103,6 +106,12 @@ public List<JobAppliedResponse> searchApplications(UUID userId, UUID jobId, UUID
             .stream()
             .map(app -> toTableResponse(app))
             .toList();
+}
+
+public Page<JobAppliedResponse> searchApplications(UUID userId, UUID jobId, UUID orgId, UUID id, int page, int size) {
+    PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "submittedAt"));
+    return repository.search(userId, jobId, orgId, id, pageable)
+            .map(this::toTableResponse);
 }
     private JobAppliedResponse toTableResponse(JobApplied app) {
 

@@ -2,6 +2,7 @@ package com.joinmeds.controller;
 import com.joinmeds.contract.UserDetailsDTO;
 import com.joinmeds.service.UserDetailsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,9 @@ public class UserDetailsController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<UserDetailsDTO>> fetchAll() {
-        return ResponseEntity.ok(service.fetchAll());
+    public ResponseEntity<Page<UserDetailsDTO>> fetchAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(service.fetchAll(page, size));
     }
 }

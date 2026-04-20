@@ -3,6 +3,7 @@ import com.joinmeds.contract.JobAppliedRequest;
 import com.joinmeds.contract.JobAppliedResponse;
 import com.joinmeds.service.JobAppliedService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,13 +27,15 @@ public class JobAppliedController {
         return ResponseEntity.ok(service.getById(userId));
     }
     @GetMapping("/search")
-    public ResponseEntity<List<JobAppliedResponse>> getApplications(
+    public ResponseEntity<Page<JobAppliedResponse>> getApplications(
             @RequestParam(required = false) UUID userId,
             @RequestParam(required = false) UUID jobId,
             @RequestParam(required = false) UUID orgId,
-            @RequestParam(required = false) UUID id
+            @RequestParam(required = false) UUID id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
     ) {
-        return ResponseEntity.ok(service.searchApplications(userId,jobId, orgId, id));
+        return ResponseEntity.ok(service.searchApplications(userId, jobId, orgId, id, page, size));
     }
 
 }
