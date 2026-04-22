@@ -17,7 +17,11 @@ public class WebConfig {
                         .allowedOrigins(
                                 "http://localhost:5173",
                                 "http://localhost:8080",
-                                "https://joinmeds.in/","https://api.joinmeds.in") // Frontend origin
+                                "http://localhost:8082",
+                                "https://joinmeds.in",
+                                "https://www.joinmeds.in",
+                                "https://api.joinmeds.in"
+                        )
                         .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
