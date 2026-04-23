@@ -20,24 +20,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // public auth APIs
-                        .requestMatchers(
-                                "/api/user/login",
-                                "/api/user/signup",
-                                "/api/user/forgot-password",
-                                "/api/user/reset-password",
-                                "/error"
-                        ).permitAll()
-
-                        // swagger
-                        .requestMatchers(
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/v3/api-docs/**",
-                                "/webjars/**"
-                        ).permitAll()
-
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .formLogin(form -> form.disable());
