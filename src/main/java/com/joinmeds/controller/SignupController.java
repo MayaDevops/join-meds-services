@@ -3,6 +3,7 @@ package com.joinmeds.controller;
 import com.joinmeds.common.SecureSwaggerController;
 import com.joinmeds.contract.*;
 import com.joinmeds.model.UserLogin;
+import com.joinmeds.respository.JoinMedsOrgDetailsRepository;
 import com.joinmeds.respository.UserDetailsRepository;
 import com.joinmeds.respository.UserLoginRepository;
 import com.joinmeds.service.SignupService;
@@ -29,6 +30,9 @@ public class SignupController implements SecureSwaggerController {
 
     @Autowired
     private UserDetailsRepository userDetailsRepository;
+
+    @Autowired
+    private JoinMedsOrgDetailsRepository orgDetailsRepository;
 
     @Autowired
     private SignupService signupService;
@@ -90,7 +94,23 @@ public class SignupController implements SecureSwaggerController {
         );
 
         if (user.isPresent()) {
-            return ResponseEntity.ok(user.get()); // or return a DTO
+            UserLogin u = user.get();
+            UUID orgId = orgDetailsRepository.findByUserId(u.getId())
+                    .map(org -> org.getId())
+                    .orElse(null);
+            LoginResponse response = LoginResponse.builder()
+                    .id(u.getId())
+                    .username(u.getUsername())
+                    .emailMobile(u.getEmailMobile())
+                    .userType(u.getUserType())
+                    .orgName(u.getOrgName())
+                    .incorporationNo(u.getIncorporationNo())
+                    .officialEmail(u.getOfficialEmail())
+                    .officePhone(u.getOfficePhone())
+                    .createdAt(u.getCreatedAt())
+                    .orgId(orgId)
+                    .build();
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(401).body("Invalid username or password");
         }
