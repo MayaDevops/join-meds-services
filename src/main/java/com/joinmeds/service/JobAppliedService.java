@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -101,15 +103,29 @@ public class JobAppliedService {
     }
 
 
-public List<JobAppliedResponse> searchApplications(UUID userId, UUID jobId, UUID orgId, UUID id) {
-    return repository.search(userId, jobId, orgId, id)
-            .stream()
-            .map(app -> toTableResponse(app))
-            .toList();
-}
-
-public Page<JobAppliedResponse> searchApplications(UUID userId, UUID jobId, UUID orgId, UUID id, int page, int size) {
+public Page<JobAppliedResponse> searchApplications(UUID userId, UUID jobId, UUID orgId, UUID id, String keyword, int page, int size) {
     PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "submittedAt"));
+
+    if (keyword != null && !keyword.isBlank()) {
+        Set<UUID> byMobile = userLoginRepository
+                .findByEmailMobileContainingIgnoreCase(keyword)
+                .stream().map(u -> u.getId()).collect(Collectors.toSet());
+
+        Set<UUID> byNameOrEmail = userDetailsRepository
+                .findByFullnameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword)
+                .stream().map(u -> u.getUserId()).collect(Collectors.toSet());
+
+        Set<UUID> matchedUserIds = Stream.concat(byMobile.stream(), byNameOrEmail.stream())
+                .collect(Collectors.toSet());
+
+        if (matchedUserIds.isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        return repository.searchWithUserIds(userId, jobId, orgId, id, matchedUserIds, pageable)
+                .map(this::toTableResponse);
+    }
+
     return repository.search(userId, jobId, orgId, id, pageable)
             .map(this::toTableResponse);
 }

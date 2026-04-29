@@ -9,9 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -86,7 +88,27 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public Page<UserDetailsDTO> fetchAll(int page, int size) {
-        Page<UserDetails> pageResult = repo.findAll(PageRequest.of(page, size));
+        return fetchAll(null, page, size);
+    }
+
+    @Override
+    public Page<UserDetailsDTO> fetchAll(String keyword, int page, int size) {
+        PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<UserDetails> pageResult;
+
+        if (keyword != null && !keyword.isBlank()) {
+            Set<UUID> mobileMatchedUserIds = userLoginRepository
+                    .findByEmailMobileContainingIgnoreCase(keyword)
+                    .stream().map(UserLogin::getId).collect(Collectors.toSet());
+
+            Set<UUID> userIds = mobileMatchedUserIds.isEmpty()
+                    ? Collections.singleton(UUID.randomUUID()) // dummy to avoid empty IN clause error
+                    : mobileMatchedUserIds;
+
+            pageResult = repo.searchByKeyword(keyword, userIds, pageable);
+        } else {
+            pageResult = repo.findAll(pageable);
+        }
 
         Set<UUID> userIds = pageResult.getContent().stream()
                 .map(UserDetails::getUserId)

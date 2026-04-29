@@ -1,5 +1,6 @@
 package com.joinmeds.controller;
 import com.joinmeds.contract.JoinMedsOrgDetailsRequest;
+import com.joinmeds.contract.OrgListResponse;
 import com.joinmeds.model.JoinMedsOrgDetails;
 import com.joinmeds.service.JoinMedsOrgDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,9 @@ public class OrgDetailsController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<JoinMedsOrgDetails>> getAll() {
-        return ResponseEntity.ok(service.getAllOrgDetails());
+    public ResponseEntity<List<OrgListResponse>> getAll(
+            @RequestParam(required = false) String keyword
+    ) {
+        return ResponseEntity.ok(service.getAllOrgDetails(keyword));
     }
 }

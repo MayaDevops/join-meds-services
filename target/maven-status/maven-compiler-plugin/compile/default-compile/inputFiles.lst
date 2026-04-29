@@ -1,4 +1,5 @@
 /Users/unnimayakrishnan/Documents/Maya/joinmeds/join-meds-services/src/main/java/com/joinmeds/JoinmedsApplication.java
+/Users/unnimayakrishnan/Documents/Maya/joinmeds/join-meds-services/src/main/java/com/joinmeds/common/JacksonConfig.java
 /Users/unnimayakrishnan/Documents/Maya/joinmeds/join-meds-services/src/main/java/com/joinmeds/common/OpenApi30Config.java
 /Users/unnimayakrishnan/Documents/Maya/joinmeds/join-meds-services/src/main/java/com/joinmeds/common/PasswordConfig.java
 /Users/unnimayakrishnan/Documents/Maya/joinmeds/join-meds-services/src/main/java/com/joinmeds/common/SecureSwaggerController.java

@@ -4,7 +4,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,5 +38,30 @@ public interface JobAppliedRepository extends JpaRepository<JobApplied, UUID> {
           AND (:id     IS NULL OR a.id     = :id)
     """)
     Page<JobApplied> search(UUID userId, UUID jobId, UUID orgId, UUID id, Pageable pageable);
+
+    @Query(value = """
+        SELECT a FROM JobApplied a
+        WHERE (:userId IS NULL OR a.userId = :userId)
+          AND (:jobId  IS NULL OR a.jobId  = :jobId)
+          AND (:orgId  IS NULL OR a.orgId  = :orgId)
+          AND (:id     IS NULL OR a.id     = :id)
+          AND a.userId IN :userIds
+    """,
+    countQuery = """
+        SELECT COUNT(a) FROM JobApplied a
+        WHERE (:userId IS NULL OR a.userId = :userId)
+          AND (:jobId  IS NULL OR a.jobId  = :jobId)
+          AND (:orgId  IS NULL OR a.orgId  = :orgId)
+          AND (:id     IS NULL OR a.id     = :id)
+          AND a.userId IN :userIds
+    """)
+    Page<JobApplied> searchWithUserIds(
+        @Param("userId") UUID userId,
+        @Param("jobId") UUID jobId,
+        @Param("orgId") UUID orgId,
+        @Param("id") UUID id,
+        @Param("userIds") Collection<UUID> userIds,
+        Pageable pageable
+    );
 }
 

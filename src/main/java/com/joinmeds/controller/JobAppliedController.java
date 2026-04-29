@@ -32,10 +32,11 @@ public class JobAppliedController {
             @RequestParam(required = false) UUID jobId,
             @RequestParam(required = false) UUID orgId,
             @RequestParam(required = false) UUID id,
+            @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        return ResponseEntity.ok(service.searchApplications(userId, jobId, orgId, id, page, size));
+        return ResponseEntity.ok(service.searchApplications(userId, jobId, orgId, id, keyword, page, size));
     }
 
 }
