@@ -15,6 +15,10 @@ spring:
       max-file-size: 5MB
       max-request-size: 5MB
 
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
   jpa:
     hibernate:
       ddl-auto: update

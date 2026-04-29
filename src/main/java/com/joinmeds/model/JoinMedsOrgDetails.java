@@ -1,7 +1,6 @@
 package com.joinmeds.model;
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -44,7 +43,7 @@ public class JoinMedsOrgDetails {
     private String jobDesc;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private String createdAt;
 
     @Column(name = "user_id")
     private UUID userId;

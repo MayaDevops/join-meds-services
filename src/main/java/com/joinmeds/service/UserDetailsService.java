@@ -12,5 +12,6 @@ public interface UserDetailsService {
     UserDetailsDTO update(UUID id, UserDetailsDTO dto);
     List<UserDetailsDTO> fetchAll();
     Page<UserDetailsDTO> fetchAll(int page, int size);
+    Page<UserDetailsDTO> fetchAll(String keyword, int page, int size);
     UserDetailsDTO fetchById(UUID id);
 }

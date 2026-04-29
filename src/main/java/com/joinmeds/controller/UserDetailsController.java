@@ -32,8 +32,9 @@ public class UserDetailsController {
 
     @GetMapping("/all")
     public ResponseEntity<Page<UserDetailsDTO>> fetchAll(
+            @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(service.fetchAll(page, size));
+        return ResponseEntity.ok(service.fetchAll(keyword, page, size));
     }
 }
