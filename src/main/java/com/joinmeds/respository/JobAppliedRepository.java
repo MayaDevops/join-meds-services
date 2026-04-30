@@ -21,7 +21,12 @@ public interface JobAppliedRepository extends JpaRepository<JobApplied, UUID> {
           AND (:id     IS NULL OR a.id     = :id)
         ORDER BY a.submittedAt DESC
     """)
-    List<JobApplied> search(UUID userId, UUID jobId, UUID orgId, UUID id);
+    List<JobApplied> search(
+        @Param("userId") UUID userId,
+        @Param("jobId") UUID jobId,
+        @Param("orgId") UUID orgId,
+        @Param("id") UUID id
+    );
 
     @Query(value = """
         SELECT a FROM JobApplied a
@@ -37,7 +42,13 @@ public interface JobAppliedRepository extends JpaRepository<JobApplied, UUID> {
           AND (:orgId  IS NULL OR a.orgId  = :orgId)
           AND (:id     IS NULL OR a.id     = :id)
     """)
-    Page<JobApplied> search(UUID userId, UUID jobId, UUID orgId, UUID id, Pageable pageable);
+    Page<JobApplied> search(
+        @Param("userId") UUID userId,
+        @Param("jobId") UUID jobId,
+        @Param("orgId") UUID orgId,
+        @Param("id") UUID id,
+        Pageable pageable
+    );
 
     @Query(value = """
         SELECT a FROM JobApplied a
