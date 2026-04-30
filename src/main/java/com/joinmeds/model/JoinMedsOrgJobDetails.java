@@ -43,12 +43,11 @@ public class JoinMedsOrgJobDetails {
     @Column(name = "pay_range")
     private String payRange;
 
-    @Column(name = "job_desc", length = 1000)
+    @Column(name = "job_desc", length = 2500)
     private String jobDesc;
 
-//    @Column(name = "created_at")
-//
-//    private LocalDateTime createdAt;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     @Column(name = "user_id")
     private UUID userId;
