@@ -96,7 +96,7 @@ public class SignupController implements SecureSwaggerController {
         if (user.isPresent()) {
             UserLogin u = user.get();
 
-            if (!"CITIZEN".equals(u.getUserType())) {
+            if (!"ORGANIZATION".equals(u.getUserType())) {
                 return ResponseEntity.status(401).body("Organization account does not exist");
             }
 
