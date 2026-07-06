@@ -38,3 +38,4 @@ public class UserDetailsController {
         return ResponseEntity.ok(service.fetchAll(keyword, page, size));
     }
 }
+

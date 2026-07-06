@@ -4,6 +4,8 @@ import com.joinmeds.contract.JobAppliedResponse;
 import com.joinmeds.model.*;
 import com.joinmeds.respository.*;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -11,7 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -21,11 +25,15 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class JobAppliedService {
 
+    private static final Logger log = LoggerFactory.getLogger(JobAppliedService.class);
+
     private final JobAppliedRepository repository;
     private final JoinMedsOrgDetailsRepository orgDetailsRepository;
     private final UserDetailsRepository userDetailsRepository;
     private final JoinMedsOrgJobDetailsRepository joinMedsOrgJobDetailsRepository;
     private final UserLoginRepository userLoginRepository;
+    private final MailService mailService;
+    private final NotificationService notificationService;
 
     public JobAppliedResponse saveApplication(JobAppliedRequest request) {
         JobApplied job = JobApplied.builder()
@@ -40,7 +48,63 @@ public class JobAppliedService {
 
         JobApplied saved = repository.save(job);
 
+        notifyOrganization(saved);
+
         return toResponse(saved);
+    }
+
+    /**
+     * After an application is saved, email the corresponding organization and
+     * persist an in-app notification for the org's notification bell.
+     * Any failure here is logged but never breaks the apply flow.
+     */
+    private void notifyOrganization(JobApplied saved) {
+        try {
+            // Candidate name: prefer applicant name on request, fall back to profile full name.
+            String candidateName = saved.getApplicantName();
+            if (candidateName == null || candidateName.isBlank()) {
+                candidateName = userDetailsRepository.findByUserId(saved.getUserId())
+                        .map(UserDetails::getFullname)
+                        .orElse("A candidate");
+            }
+
+            String hiringFor = saved.getJobId() == null ? null
+                    : joinMedsOrgJobDetailsRepository.findById(saved.getJobId())
+                    .map(JoinMedsOrgJobDetails::getHiringFor)
+                    .orElse(null);
+
+            String candidateEmail = userDetailsRepository.findByUserId(saved.getUserId())
+                    .map(UserDetails::getEmail)
+                    .orElse(null);
+
+            UserLogin org = saved.getOrgId() == null ? null
+                    : userLoginRepository.findById(saved.getOrgId()).orElse(null);
+            String orgName = org != null ? org.getOrgName() : null;
+            String orgEmail = org != null ? org.getOfficialEmail() : null;
+
+            String message = candidateName + " submitted job application"
+                    + (hiringFor != null && !hiringFor.isBlank() ? " for " + hiringFor : "");
+
+            // In-app notification for the bell icon.
+            notificationService.create(saved.getOrgId(), saved.getUserId(), saved.getJobId(),
+                    candidateName, message, "JOB_APPLICATION");
+
+            // Email to the organization.
+            Map<String, Object> vars = new HashMap<>();
+            vars.put("orgName", orgName != null ? orgName : "Organization");
+            vars.put("candidateName", candidateName);
+            vars.put("hiringFor", hiringFor);
+            vars.put("candidateEmail", candidateEmail);
+            vars.put("submittedAt", saved.getSubmittedAt() != null ? saved.getSubmittedAt().toString() : null);
+
+            mailService.sendTemplateMail(
+                    orgEmail,
+                    "New Job Application" + (hiringFor != null ? " - " + hiringFor : ""),
+                    "org-job-application",
+                    vars);
+        } catch (Exception ex) {
+            log.error("Failed to notify organization for application {}: {}", saved.getId(), ex.getMessage(), ex);
+        }
     }
 
     public List<JobAppliedResponse> getById(UUID userId) {

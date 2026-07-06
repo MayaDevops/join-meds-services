@@ -1,0 +1,10 @@
+com/joinmeds/service/MailService.class
+com/joinmeds/respository/NotificationRepository.class
+com/joinmeds/contract/NotificationResponse$NotificationResponseBuilder.class
+com/joinmeds/contract/NotificationResponse$NotificationList.class
+com/joinmeds/contract/NotificationResponse$NotificationList$NotificationListBuilder.class
+com/joinmeds/model/Notification.class
+com/joinmeds/service/NotificationService.class
+com/joinmeds/controller/NotificationController.class
+com/joinmeds/model/Notification$NotificationBuilder.class
+com/joinmeds/contract/NotificationResponse.class

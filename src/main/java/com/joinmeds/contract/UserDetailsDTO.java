@@ -13,6 +13,7 @@ public class UserDetailsDTO {
     private String fullname;
     private String dob;
     private String email;
+    private String emailMobile;
     private String address;
     private String aadhaarNo;
     private String photoId;
