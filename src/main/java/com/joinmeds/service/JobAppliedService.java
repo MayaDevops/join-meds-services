@@ -144,6 +144,9 @@ public class JobAppliedService {
         String email = userDetailsRepository.findByUserId(entity.getUserId())
                 .map(UserDetails::getEmail)
                 .orElse(null);
+        String profession = userDetailsRepository.findByUserId(entity.getUserId())
+                .map(UserDetails::getProfession)
+                .orElse(null);
 
         return JobAppliedResponse.builder()
                 .id(entity.getId())
@@ -162,6 +165,7 @@ public class JobAppliedService {
                 .payTo(payTo)
                 .payRange(payRange)
                 .fullname(fullName)
+                .profession(profession)
                 .build();
 
     }
@@ -176,7 +180,7 @@ public Page<JobAppliedResponse> searchApplications(UUID userId, UUID jobId, UUID
                 .stream().map(u -> u.getId()).collect(Collectors.toSet());
 
         Set<UUID> byNameOrEmail = userDetailsRepository
-                .findByFullnameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword)
+                .findByFullnameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrProfessionContainingIgnoreCase(keyword, keyword, keyword)
                 .stream().map(u -> u.getUserId()).collect(Collectors.toSet());
 
         Set<UUID> matchedUserIds = Stream.concat(byMobile.stream(), byNameOrEmail.stream())
@@ -220,6 +224,7 @@ public Page<JobAppliedResponse> searchApplications(UUID userId, UUID jobId, UUID
         if (!list.isEmpty()) {
             UserDetails users = list.get(0); // or pick latest by updatedAt
             res.setFullname(users.getFullname());
+            res.setProfession(users.getProfession());
         }
 
 

@@ -18,6 +18,7 @@ public interface UserDetailsRepository extends JpaRepository<UserDetails, UUID> 
     Optional<UserDetails> findById(UUID userId);
     List<UserDetails> findAllByUserId(UUID userId);
     List<UserDetails> findByFullnameContainingIgnoreCaseOrEmailContainingIgnoreCase(String name, String email);
+    List<UserDetails> findByFullnameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrProfessionContainingIgnoreCase(String name, String email, String profession);
 
     @Query(value = """
         SELECT u FROM UserDetails u
