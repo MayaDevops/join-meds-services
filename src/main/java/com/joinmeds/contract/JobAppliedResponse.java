@@ -16,6 +16,7 @@ public class JobAppliedResponse {
     private UUID orgId;
     private String orgName;
     private String fullname;
+    private String profession;
     private String hiringFor;
     private String natureJob;
     private String emailMobile;
