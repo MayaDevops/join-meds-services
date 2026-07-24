@@ -77,8 +77,8 @@ public class JobAppliedService {
                     .map(UserDetails::getEmail)
                     .orElse(null);
 
-            UserLogin org = saved.getOrgId() == null ? null
-                    : userLoginRepository.findById(saved.getOrgId()).orElse(null);
+            UserLogin org = resolveOrgUserLogin(saved.getOrgId());
+            UUID orgUserId = org != null ? org.getId() : null;
             String orgName = org != null ? org.getOrgName() : null;
             String orgEmail = org != null ? org.getOfficialEmail() : null;
 
@@ -86,7 +86,7 @@ public class JobAppliedService {
                     + (hiringFor != null && !hiringFor.isBlank() ? " for " + hiringFor : "");
 
             // In-app notification for the bell icon.
-            notificationService.create(saved.getOrgId(), saved.getUserId(), saved.getJobId(),
+            notificationService.create(orgUserId, saved.getUserId(), saved.getJobId(),
                     candidateName, message, "JOB_APPLICATION");
 
             // Email to the organization.
@@ -107,6 +107,18 @@ public class JobAppliedService {
         }
     }
 
+    /**
+     * orgId on a job application may be either a JoinMedsOrgDetails.id (the org identity
+     * used on job postings) or, for older data, a UserLogin.id directly. Resolve either way.
+     */
+    private UserLogin resolveOrgUserLogin(UUID orgId) {
+        if (orgId == null) return null;
+        UUID userLoginId = orgDetailsRepository.findById(orgId)
+                .map(JoinMedsOrgDetails::getUserId)
+                .orElse(orgId);
+        return userLoginRepository.findById(userLoginId).orElse(null);
+    }
+
     public List<JobAppliedResponse> getById(UUID userId) {
         return repository.findByUserId(userId).stream()
                 .map(this::toResponse)
@@ -117,9 +129,8 @@ public class JobAppliedService {
         String hiringFor = joinMedsOrgJobDetailsRepository.findById(entity.getJobId())
                 .map(JoinMedsOrgJobDetails::getHiringFor)
                 .orElse(null);
-        String orgName = userLoginRepository.findById(entity.getOrgId())
-                .map(UserLogin::getOrgName)
-                .orElse(null);
+        UserLogin orgUser = resolveOrgUserLogin(entity.getOrgId());
+        String orgName = orgUser != null ? orgUser.getOrgName() : null;
         String emailMobile = userLoginRepository.findById(entity.getUserId())
                 .map(UserLogin::getEmailMobile)
                 .orElse(null);
