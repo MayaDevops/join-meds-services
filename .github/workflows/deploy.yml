@@ -42,11 +42,32 @@ jobs:
 
       - name: Stop running app and restart systemd service
         uses: appleboy/ssh-action@master
+        env:
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          envs: MAIL_USERNAME,MAIL_PASSWORD
           script: |
+            echo "Writing mail credentials to environment file..."
+            sudo mkdir -p /etc/joinmeds
+            sudo tee /etc/joinmeds/mail.env > /dev/null <<EOF
+            MAIL_USERNAME=$MAIL_USERNAME
+            MAIL_PASSWORD=$MAIL_PASSWORD
+            MAIL_ENABLED=true
+            MAIL_FROM=JoinMeds <joinmedsofficial@gmail.com>
+            EOF
+            sudo chmod 600 /etc/joinmeds/mail.env
+            sudo chown root:root /etc/joinmeds/mail.env
+
+            echo "Ensuring systemd unit loads the mail environment file..."
+            UNIT_FILE=$(systemctl show joinmeds --property=FragmentPath --value)
+            if ! sudo grep -q "EnvironmentFile=/etc/joinmeds/mail.env" "$UNIT_FILE"; then
+              sudo sed -i "/\[Service\]/a EnvironmentFile=/etc/joinmeds/mail.env" "$UNIT_FILE"
+            fi
+
             echo "Killing any existing Java process using port 8082..."
             PID=$(sudo lsof -t -i:8082 || true)
             if [ ! -z "$PID" ]; then
