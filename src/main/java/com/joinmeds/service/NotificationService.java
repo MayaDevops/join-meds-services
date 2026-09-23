@@ -43,6 +43,17 @@ public class NotificationService {
                 .build();
     }
 
+    public NotificationResponse.NotificationList getByUser(UUID userId) {
+        List<NotificationResponse> list = notificationRepository.findByUserIdOrderByCreatedAtDesc(userId).stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+        long unread = notificationRepository.countByUserIdAndReadFalse(userId);
+        return NotificationResponse.NotificationList.builder()
+                .unreadCount(unread)
+                .notifications(list)
+                .build();
+    }
+
     public void markAsRead(UUID id) {
         notificationRepository.findById(id).ifPresent(n -> {
             n.setRead(true);
@@ -52,6 +63,14 @@ public class NotificationService {
 
     public void markAllAsRead(UUID orgId) {
         List<Notification> unread = notificationRepository.findByOrgIdOrderByCreatedAtDesc(orgId).stream()
+                .filter(n -> !Boolean.TRUE.equals(n.getRead()))
+                .collect(Collectors.toList());
+        unread.forEach(n -> n.setRead(true));
+        notificationRepository.saveAll(unread);
+    }
+
+    public void markAllAsReadForUser(UUID userId) {
+        List<Notification> unread = notificationRepository.findByUserIdOrderByCreatedAtDesc(userId).stream()
                 .filter(n -> !Boolean.TRUE.equals(n.getRead()))
                 .collect(Collectors.toList());
         unread.forEach(n -> n.setRead(true));
