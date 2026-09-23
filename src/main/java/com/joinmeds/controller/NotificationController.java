@@ -20,6 +20,11 @@ public class NotificationController {
         return ResponseEntity.ok(service.getByOrg(orgId));
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<NotificationResponse.NotificationList> getByUser(@PathVariable UUID userId) {
+        return ResponseEntity.ok(service.getByUser(userId));
+    }
+
     @PutMapping("/{id}/read")
     public ResponseEntity<Void> markAsRead(@PathVariable UUID id) {
         service.markAsRead(id);
@@ -29,6 +34,12 @@ public class NotificationController {
     @PutMapping("/org/{orgId}/read-all")
     public ResponseEntity<Void> markAllAsRead(@PathVariable UUID orgId) {
         service.markAllAsRead(orgId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/user/{userId}/read-all")
+    public ResponseEntity<Void> markAllAsReadForUser(@PathVariable UUID userId) {
+        service.markAllAsReadForUser(userId);
         return ResponseEntity.ok().build();
     }
 }
