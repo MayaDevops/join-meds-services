@@ -4,9 +4,7 @@ import lombok.*;
 
 import java.util.UUID;
 
-/**
- * Sent by the mobile/web client after login, and again whenever FCM issues a new token.
- */
+
 @Getter
 @Setter
 @NoArgsConstructor

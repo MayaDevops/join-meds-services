@@ -12,17 +12,6 @@ import org.springframework.context.annotation.Configuration;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-/**
- * Initialises the Firebase Admin SDK once at startup.
- *
- * <p>The service account JSON is referenced by path and read from outside the repository —
- * it is a private key and must never be committed. Set {@code FCM_CREDENTIALS_PATH} in the
- * environment, exactly as {@code MAIL_USERNAME} / {@code MAIL_PASSWORD} already are.
- *
- * <p>Startup never fails because of FCM: if the SDK cannot be initialised the error is logged
- * and the application continues serving requests without push, matching how
- * {@link com.joinmeds.service.MailService} degrades when mail is unavailable.
- */
 @Configuration
 public class FirebaseConfig {
 

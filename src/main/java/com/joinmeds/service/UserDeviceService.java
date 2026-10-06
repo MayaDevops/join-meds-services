@@ -22,13 +22,7 @@ public class UserDeviceService {
 
     private final UserDeviceRepository userDeviceRepository;
 
-    /**
-     * Registers or refreshes a device.
-     *
-     * <p>Keyed on {@code deviceId} so a device that re-registers — new FCM token, or a different
-     * user signing in on the same handset — updates its existing row. Inserting instead would
-     * leave stale tokens behind and deliver the same notification several times.
-     */
+
     public DeviceResponse register(DeviceRegisterRequest request) {
         if (request.getUserId() == null) {
             throw new IllegalArgumentException("userId is required.");
@@ -59,10 +53,7 @@ public class UserDeviceService {
         return toResponse(saved);
     }
 
-    /**
-     * Called on logout. The row is kept rather than deleted so the device's history survives
-     * and a re-login reuses the same row.
-     */
+
     public void deactivate(String deviceId) {
         userDeviceRepository.findByDeviceId(deviceId).ifPresent(device -> {
             device.setActive(false);

@@ -16,7 +16,6 @@ public class UserDeviceController {
 
     private final UserDeviceService service;
 
-    /** Called by the client after login and on every FCM token refresh. */
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody DeviceRegisterRequest request) {
         try {
@@ -26,7 +25,6 @@ public class UserDeviceController {
         }
     }
 
-    /** Called on logout so a signed-out device stops receiving notifications. */
     @DeleteMapping("/unregister/{deviceId}")
     public ResponseEntity<Void> unregister(@PathVariable String deviceId) {
         service.deactivate(deviceId);

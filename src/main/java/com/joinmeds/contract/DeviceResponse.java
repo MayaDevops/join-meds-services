@@ -5,10 +5,7 @@ import lombok.*;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * The FCM token is deliberately not returned — it is a delivery credential, and the client
- * already holds it.
- */
+
 @Getter
 @Setter
 @NoArgsConstructor
