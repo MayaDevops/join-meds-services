@@ -49,6 +49,8 @@ app:
     # Firebase service account JSON holds a private key, so it is referenced by path and kept
     enabled: ${FCM_ENABLED:false}
     credentials-path: ${FCM_CREDENTIALS_PATH:}
+    # must match the notification channel the Android app creates; Android 8+ drops unknown channels
+    android-channel-id: ${FCM_ANDROID_CHANNEL_ID:joinmeds_default}
 file:
   upload-dir: uploads/photos
   resume-dir: uploads/resumes

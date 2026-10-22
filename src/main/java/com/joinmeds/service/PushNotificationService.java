@@ -1,6 +1,10 @@
 package com.joinmeds.service;
 
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.messaging.AndroidConfig;
+import com.google.firebase.messaging.AndroidNotification;
+import com.google.firebase.messaging.ApnsConfig;
+import com.google.firebase.messaging.Aps;
 import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.MessagingErrorCode;
@@ -35,6 +39,10 @@ public class PushNotificationService {
 
     @Value("${app.fcm.enabled:false}")
     private boolean fcmEnabled;
+
+    /** Android 8+ drops a notification whose channel is unknown to the app. */
+    @Value("${app.fcm.android-channel-id:joinmeds_default}")
+    private String androidChannelId;
 
     /**
      * @param recipientId UserLogin id of the recipient — the org for org-facing notifications,
@@ -73,6 +81,8 @@ public class PushNotificationService {
                             .setBody(body)
                             .build())
                     .putAllData(payload)
+                    .setAndroidConfig(androidConfig())
+                    .setApnsConfig(apnsConfig())
                     .addAllTokens(tokens)
                     .build();
 
@@ -84,6 +94,40 @@ public class PushNotificationService {
         } catch (Exception ex) {
             log.error("Failed to push to user {}: {}", recipientId, ex.getMessage(), ex);
         }
+    }
+
+    /**
+     * Android delivery options. Both configs are set on the same message: FCM applies only the
+     * one matching each token's platform, so a single multicast still serves mixed devices.
+     *
+     * <p>HIGH priority wakes a device in Doze mode — without it a notification can sit undelivered
+     * until the next maintenance window. The channel id must match the channel the app creates;
+     * on Android 8+ a notification naming an unknown channel is discarded silently.
+     */
+    private AndroidConfig androidConfig() {
+        return AndroidConfig.builder()
+                .setPriority(AndroidConfig.Priority.HIGH)
+                .setNotification(AndroidNotification.builder()
+                        .setChannelId(androidChannelId)
+                        .setSound("default")
+                        .build())
+                .build();
+    }
+
+    /**
+     * Apple delivery options. Without an {@code aps} block iOS shows the alert silently — no
+     * sound, no badge increment. {@code apns-priority: 10} tells APNs to deliver immediately,
+     * which is the correct setting for a user-visible alert.
+     */
+    private ApnsConfig apnsConfig() {
+        return ApnsConfig.builder()
+                .putHeader("apns-priority", "10")
+                .setAps(Aps.builder()
+                        .setSound("default")
+                        // lets an app's notification service extension alter the alert before display
+                        .setMutableContent(true)
+                        .build())
+                .build();
     }
 
     /**

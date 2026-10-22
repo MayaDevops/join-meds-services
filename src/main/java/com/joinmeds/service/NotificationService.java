@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,9 @@ import java.util.stream.Collectors;
 public class NotificationService {
 
     private static final Logger log = LoggerFactory.getLogger(NotificationService.class);
+
+    /** Types whose recipient is the organisation rather than the user named on the row. */
+    private static final Set<String> ORG_FACING_TYPES = Set.of("JOB_APPLICATION");
 
     private final NotificationRepository notificationRepository;
     private final PushNotificationService pushNotificationService;
@@ -51,16 +55,14 @@ public class NotificationService {
 
     /**
      * Pushes a saved notification to the recipient's registered devices.
-     *
-     * <p>A notification row carries both {@code orgId} and {@code userId}. In the existing
-     * JOB_APPLICATION flow {@code orgId} is the recipient organisation (see
-     * {@link Notification#getOrgId()}) while {@code userId} is the candidate who acted, so the
-     * org takes precedence here. {@code userId} is treated as the recipient only when there is
-     * no org — the shape a future candidate-facing notification ("you have been shortlisted")
-     * would take. Worth confirming before any user-facing notification type is added.
      */
     private void pushToRecipient(Notification saved) {
-        UUID recipientId = saved.getOrgId() != null ? saved.getOrgId() : saved.getUserId();
+        UUID recipientId = recipientOf(saved);
+        if (recipientId == null) {
+            log.warn("Skipping push for notification {} of type {} — recipient could not be resolved",
+                    saved.getId(), saved.getType());
+            return;
+        }
 
         // FCM data values must be Strings.
         Map<String, String> data = new HashMap<>();
@@ -73,6 +75,26 @@ public class NotificationService {
         }
 
         pushNotificationService.sendToUser(recipientId, titleFor(saved.getType()), saved.getMessage(), data);
+    }
+
+    /**
+     * Resolves which UserLogin a notification should be pushed to.
+     *
+     * <p>A notification row carries both {@code orgId} and {@code userId}, and which one is the
+     * recipient depends on the type. For an org-facing type such as JOB_APPLICATION, {@code orgId}
+     * is the recipient organisation and {@code userId} is the candidate who acted — so an
+     * unresolvable org must not fall back to {@code userId}, or the applicant is pushed their own
+     * application. {@code JobAppliedService.resolveOrgUserLogin} returns null for an org that is
+     * not in the database, which makes that case reachable in practice.
+     *
+     * <p>Any other (candidate-facing) type, such as a future "you have been shortlisted", is
+     * addressed to {@code userId}.
+     */
+    private UUID recipientOf(Notification saved) {
+        if (ORG_FACING_TYPES.contains(saved.getType())) {
+            return saved.getOrgId();
+        }
+        return saved.getUserId() != null ? saved.getUserId() : saved.getOrgId();
     }
 
     private String titleFor(String type) {

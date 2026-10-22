@@ -44,7 +44,7 @@ public class UserDeviceService {
 
         device.setUserId(request.getUserId());
         device.setFcmToken(request.getFcmToken());
-        device.setPlatform(request.getPlatform());
+        device.setPlatform(normalisePlatform(request.getPlatform()));
         device.setActive(true);
         device.setUpdatedAt(now);
 
@@ -91,6 +91,14 @@ public class UserDeviceService {
                 .activeCount(activeCount)
                 .devices(devices)
                 .build();
+    }
+
+    /**
+     * Clients send the platform in whatever case their SDK reports ("ios", "Android"), so it is
+     * upper-cased on the way in to keep the column queryable as ANDROID / IOS / WEB.
+     */
+    private String normalisePlatform(String platform) {
+        return platform == null || platform.isBlank() ? null : platform.trim().toUpperCase();
     }
 
     private DeviceResponse toResponse(UserDevice device) {
