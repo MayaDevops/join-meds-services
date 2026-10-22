@@ -45,6 +45,10 @@ app:
   mail:
     enabled: ${MAIL_ENABLED:true}
     from: ${MAIL_FROM:JoinMeds <no-reply@joinmeds.com>}
+  fcm:
+    # Firebase service account JSON holds a private key, so it is referenced by path and kept
+    enabled: ${FCM_ENABLED:false}
+    credentials-path: ${FCM_CREDENTIALS_PATH:}
 file:
   upload-dir: uploads/photos
   resume-dir: uploads/resumes
